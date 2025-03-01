@@ -135,6 +135,30 @@ Data.ObjectiveTypes = {
   },
 }
 
+---@type Octo_WeakAura[]
+Data.WeakAurasToTrack = {
+  {
+    displayName = "Assignment Pack",
+    wagoUrl = "https://wago.io/NSNerubarPalace",
+    auraName = "Northern Sky Nerub-ar Palace",
+  },
+  {
+    displayName = "NS DB",
+    wagoUrl = "https://wago.io/NorthernSky",
+    auraName = "Northern Sky Database & Functions",
+  },
+  {
+    displayName = "Interrupt",
+    wagoUrl = "https://wago.io/InterruptAnchor",
+    auraName = "Interrupt Anchor",
+  },
+  {
+    displayName = "Auditor",
+    wagoUrl = "https://wago.io/exrYkN05u",
+    auraName = "Octopals Verifier Client",
+  },
+}
+
 ---@type WK_Objective[]
 Data.Objectives = {
   {professionID = 171, typeID = Enum.WK_Objectives.Unique,        quests = {81146},                             itemID = 227409, points = 10, loc = {m = 2339, x = 59.6, y = 56.2, hint = "This item can be purchased from the vendor Lyrendal in Dornogal."},                                                                                                             requires = {{type = "item", id = 210814, amount = 200}}},

@@ -478,7 +478,7 @@ function Main:GetMainColumns(unfiltered)
       onEnter = function(cellFrame)
         GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
         GameTooltip:SetText("Name", 1, 1, 1);
-        GameTooltip:AddLine("Your characters.")
+        GameTooltip:AddLine("People in your raid.")
         -- GameTooltip:AddLine(" ")
         -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
         GameTooltip:Show()
@@ -486,7 +486,7 @@ function Main:GetMainColumns(unfiltered)
       onLeave = function()
         GameTooltip:Hide()
       end,
-      width = 90,
+      width = 120,
       toggleHidden = true,
       cell = function(character)
         local name = character.name
@@ -503,69 +503,11 @@ function Main:GetMainColumns(unfiltered)
       end,
     },
     {
-      name = "Realm",
+      name = "WA Version",
       onEnter = function(cellFrame)
         GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Realm", 1, 1, 1);
-        GameTooltip:AddLine("Realm names.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 90,
-      toggleHidden = true,
-      cell = function(character)
-        return {text = character.realmName}
-      end,
-    },
-    {
-      name = "Profession",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Profession", 1, 1, 1);
-        GameTooltip:AddLine("Your professions.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 80,
-      toggleHidden = true,
-      cell = function(_, _, dataProfession)
-        return {text = dataProfession.name}
-      end,
-    },
-    {
-      name = "Skill",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Skill", 1, 1, 1);
-        GameTooltip:AddLine("Current skill levels.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 80,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(_, characterProfession)
-        return {text = characterProfession.level > 0 and characterProfession.level == characterProfession.maxLevel and GREEN_FONT_COLOR:WrapTextInColorCode(characterProfession.level .. " / " .. characterProfession.maxLevel) or characterProfession.level .. " / " .. characterProfession.maxLevel}
-      end,
-    },
-    {
-      name = "Knowledge",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Knowledge Points", 1, 1, 1);
-        GameTooltip:AddLine("Current knowledge gained.")
+        GameTooltip:SetText("WA Version", 1, 1, 1);
+        GameTooltip:AddLine("Version of the WeakAuras addon that this person has installed.")
         -- GameTooltip:AddLine(" ")
         -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
         GameTooltip:Show()
@@ -576,317 +518,137 @@ function Main:GetMainColumns(unfiltered)
       width = 100,
       align = "CENTER",
       toggleHidden = true,
-      cell = function(_, characterProfession, dataProfession)
-        local text = ""
-
-        if characterProfession.knowledgeLevel then
-          text = format("%d", characterProfession.knowledgeLevel)
-          if characterProfession.knowledgeUnspent and characterProfession.knowledgeUnspent > 0 then
-            text = format("%d %s", characterProfession.knowledgeLevel, LIGHTBLUE_FONT_COLOR:WrapTextInColorCode("(" .. characterProfession.knowledgeUnspent .. ")"))
-          end
-        end
-        if characterProfession.knowledgeMaxLevel then
-          text = format("%s / %d", text, characterProfession.knowledgeMaxLevel)
-        end
-        if characterProfession.knowledgeMaxLevel > 0 and characterProfession.knowledgeLevel == characterProfession.knowledgeMaxLevel then
-          text = GREEN_FONT_COLOR:WrapTextInColorCode(text)
-        end
-
-        return {
-          text = text,
-          onEnter = function(cellFrame)
-            local pointsSpentColor = LIGHTGRAY_FONT_COLOR
-            local pointsSpentValue = "?"
-            local pointsUnspentColor = LIGHTGRAY_FONT_COLOR
-            local pointsUnspentValue = "?"
-            local pointsMaxColor = LIGHTGRAY_FONT_COLOR
-            local pointsMaxValue = "?"
-
-            if characterProfession.knowledgeLevel then
-              pointsSpentColor = WHITE_FONT_COLOR
-              pointsSpentValue = tostring(characterProfession.knowledgeLevel)
-            end
-
-            if characterProfession.knowledgeUnspent then
-              pointsUnspentColor = WHITE_FONT_COLOR
-              if characterProfession.knowledgeUnspent > 0 then
-                pointsUnspentColor = LIGHTBLUE_FONT_COLOR
-              end
-              pointsUnspentValue = tostring(characterProfession.knowledgeUnspent)
-            end
-
-            if characterProfession.knowledgeMaxLevel then
-              pointsMaxColor = WHITE_FONT_COLOR
-              pointsMaxValue = tostring(characterProfession.knowledgeMaxLevel)
-            end
-
-            GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-            GameTooltip:SetText(dataProfession.name, 1, 1, 1)
-            GameTooltip:AddDoubleLine("Points Spent:", pointsSpentValue, nil, nil, nil, pointsSpentColor.r, pointsSpentColor.g, pointsSpentColor.b)
-            GameTooltip:AddDoubleLine("Points Unspent:", pointsUnspentValue, nil, nil, nil, pointsUnspentColor.r, pointsUnspentColor.g, pointsUnspentColor.b)
-            GameTooltip:AddDoubleLine("Max:", pointsMaxValue, nil, nil, nil, pointsMaxColor.r, pointsMaxColor.g, pointsMaxColor.b)
-
-            if characterProfession.specializations and Utils:TableCount(characterProfession.specializations) > 0 then
-              GameTooltip:AddLine(" ")
-              GameTooltip:AddLine("Specializations:")
-              Utils:TableForEach(characterProfession.specializations, function(characterProfessionSpecialization)
-                local name = characterProfessionSpecialization.name
-                if strlenutf8(name) > 20 then
-                  name = strsub(name, 1, 20) .. "..."
-                end
-                local value = format("%d / %d", characterProfessionSpecialization.knowledgeLevel or 0, characterProfessionSpecialization.knowledgeMaxLevel or 0)
-                if characterProfessionSpecialization.rootIconID then
-                  name = "|T" .. characterProfessionSpecialization.rootIconID .. ":12|t " .. name
-                end
-                if characterProfessionSpecialization.state and characterProfessionSpecialization.state == Enum.ProfessionsSpecTabState.Locked then
-                  value = LIGHTGRAY_FONT_COLOR:WrapTextInColorCode("Locked")
-                end
-                if characterProfessionSpecialization.state and characterProfessionSpecialization.state == Enum.ProfessionsSpecTabState.Unlockable then
-                  value = DIM_GREEN_FONT_COLOR:WrapTextInColorCode("Can Unlock")
-                end
-                GameTooltip:AddDoubleLine(name, value, 1, 1, 1, 1, 1, 1)
-              end)
-            end
-
-            GameTooltip:Show()
-          end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
+      cell = function(character)
+        return {text = "TODO"}
       end,
     },
-  }
-
-  local weeklyProgress = Data:GetWeeklyProgress()
-
-  Utils:TableForEach(Data.ObjectiveTypes, function(objectiveType)
-    if objectiveType.id == Enum.WK_Objectives.DarkmoonQuest then
-      if not Data.cache.isDarkmoonOpen then
-        return
-      end
-    elseif objectiveType.id == Enum.WK_Objectives.CatchUp then
-      -- There's a hard-coded column with more info
-      return
-    end
-
-    ---@type WK_DataColumn
-    local dataColumn = {
-      name = objectiveType.name,
+    {
+      name = "BW Version",
       onEnter = function(cellFrame)
         GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText(objectiveType.name, 1, 1, 1);
-        GameTooltip:AddLine(objectiveType.description, nil, nil, nil, true)
+        GameTooltip:SetText("BW Version", 1, 1, 1);
+        GameTooltip:AddLine("Version of the BigWigs addon that this person has installed.")
+        -- GameTooltip:AddLine(" ")
+        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
         GameTooltip:Show()
       end,
       onLeave = function()
         GameTooltip:Hide()
       end,
-      width = 90,
-      toggleHidden = true,
+      width = 100,
       align = "CENTER",
-      cell = function(character, characterProfession, profession)
-        if not characterProfession.knowledgeMaxLevel or characterProfession.knowledgeMaxLevel == 0 then
-          return {text = ""}
-        end
+      toggleHidden = true,
+      cell = function(character)
+        return {text = "TODO"}
+      end,
+    },
+    {
+      name = "DBM Version",
+      onEnter = function(cellFrame)
+        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+        GameTooltip:SetText("DBM Version", 1, 1, 1);
+        GameTooltip:AddLine("Version of the Deadly Boss Mods addon that this person has installed.")
+        -- GameTooltip:AddLine(" ")
+        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
+        GameTooltip:Show()
+      end,
+      onLeave = function()
+        GameTooltip:Hide()
+      end,
+      width = 100,
+      align = "CENTER",
+      toggleHidden = true,
+      cell = function(character)
+        return {text = "TODO"}
+      end,
+    },
+    {
+      name = "MRT Version",
+      onEnter = function(cellFrame)
+        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+        GameTooltip:SetText("MRT Version", 1, 1, 1);
+        GameTooltip:AddLine("Version of the Method Raid Tools addon that this person has installed.")
+        -- GameTooltip:AddLine(" ")
+        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
+        GameTooltip:Show()
+      end,
+      onLeave = function()
+        GameTooltip:Hide()
+      end,
+      width = 100,
+      align = "CENTER",
+      toggleHidden = true,
+      cell = function(character)
+        return {text = "TODO"}
+      end,
+    },
+    {
+      name = "MRT Note",
+      onEnter = function(cellFrame)
+        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+        GameTooltip:SetText("MRT Note", 1, 1, 1);
+        GameTooltip:AddLine("Do the contents of this player's MRT note match yours?")
+        -- GameTooltip:AddLine(" ")
+        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
+        GameTooltip:Show()
+      end,
+      onLeave = function()
+        GameTooltip:Hide()
+      end,
+      width = 100,
+      align = "CENTER",
+      toggleHidden = true,
+      cell = function(character)
+        return {text = "TODO"}
+      end,
+    },
+    {
+      name = "Ignore List",
+      onEnter = function(cellFrame)
+        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+        GameTooltip:SetText("Ignore List", 1, 1, 1);
+        GameTooltip:AddLine("Does this player have anyone in the raid group on their ignore list?")
+        -- GameTooltip:AddLine(" ")
+        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
+        GameTooltip:Show()
+      end,
+      onLeave = function()
+        GameTooltip:Hide()
+      end,
+      width = 100,
+      align = "CENTER",
+      toggleHidden = true,
+      cell = function(character)
+        return {text = "TODO"}
+      end,
+    },
+  }
 
-        local questsCompleted = 0
-        local questsTotal = 0
-        local pointsEarned = 0
-        local pointsTotal = 0
-        local items = {}
-
-        local progress = Utils:TableFilter(weeklyProgress, function(progress)
-          return progress.character == character and progress.profession == profession and progress.objective.typeID == objectiveType.id
-        end)
-
-        Utils:TableForEach(progress, function(prog)
-          questsCompleted = questsCompleted + prog.questsCompleted
-          questsTotal = questsTotal + prog.questsTotal
-          pointsEarned = pointsEarned + prog.pointsEarned
-          pointsTotal = pointsTotal + prog.pointsTotal
-          Utils:TableForEach(prog.items, function(isCompleted, itemID)
-            items[itemID] = isCompleted
-          end)
-        end)
-
-        if questsTotal == 0 then
-          return {text = ""}
-        end
-
-        local text = format("%d / %d", questsCompleted, questsTotal)
-        if questsCompleted == questsTotal then
-          text = GREEN_FONT_COLOR:WrapTextInColorCode(text)
-        end
-
+  Utils:TableForEach(Data.WeakAurasToTrack, function(weakAuraCheck)
+    ---@type WK_DataColumn
+    local dataColumn = {
+      name = weakAuraCheck.displayName,
+      onEnter = function(cellFrame)
+        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+        GameTooltip:SetText(weakAuraCheck.displayName, 1, 1, 1);
+        GameTooltip:AddLine(weakAuraCheck.auraName, nil, nil, nil, true)
+        GameTooltip:AddLine(weakAuraCheck.wagoUrl, nil, nil, nil, true)
+        GameTooltip:Show()
+      end,
+      onLeave = function()
+        GameTooltip:Hide()
+      end,
+      width = 120,
+      toggleHidden = false,
+      align = "CENTER",
+      cell = function(character)
         return {
-          text = text,
-          onEnter = function(cellFrame)
-            local label = "Items:"
-            if objectiveType.type == "quest" then
-              label = "Quests:"
-            end
-
-            local showTooltip = function()
-              GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-              GameTooltip:SetText(objectiveType.name, 1, 1, 1);
-              GameTooltip:AddDoubleLine(label, format("%d / %d", questsCompleted, questsTotal), nil, nil, nil, 1, 1, 1)
-              GameTooltip:AddDoubleLine("Knowledge Points:", format("%d / %d", pointsEarned, pointsTotal), nil, nil, nil, 1, 1, 1)
-              if Utils:TableCount(items) > 0 then
-                GameTooltip:AddLine(" ")
-                for itemID, itemLooted in pairs(items) do
-                  local item = Data.cache.items[itemID]
-                  local itemCached = item and item:IsItemDataCached()
-                  local icon = itemCached and item:GetItemIcon() or 134400
-                  local name = itemCached and item:GetItemLink() or "Loading..."
-                  GameTooltip:AddDoubleLine(
-                    format("%s %s", CreateSimpleTextureMarkup(icon, 13, 13), name),
-                    CreateAtlasMarkup(itemLooted and "common-icon-checkmark" or "common-icon-redx", 12, 12)
-                  )
-                end
-              end
-              GameTooltip:Show()
-            end
-
-            for itemID in pairs(items) do
-              Data.cache.items[itemID] = Item:CreateFromItemID(itemID)
-              Data.cache.items[itemID]:ContinueOnItemLoad(showTooltip)
-            end
-
-            showTooltip()
-          end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
+          text = "TODO"
         }
       end
     }
     table.insert(columns, dataColumn)
   end)
-
-  table.insert(columns, {
-    name = "Catch-Up",
-    onEnter = function(cellFrame)
-      GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-      GameTooltip:SetText("Catch-Up", 1, 1, 1);
-      local objective = Utils:TableGet(Data.ObjectiveTypes, "id", Enum.WK_Objectives.CatchUp)
-      if objective then
-        GameTooltip:AddLine(objective.description, nil, nil, nil, true)
-      end
-      -- GameTooltip:AddLine(" ")
-      -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-      GameTooltip:Show()
-    end,
-    onLeave = function()
-      GameTooltip:Hide()
-    end,
-    width = 80,
-    align = "CENTER",
-    toggleHidden = true,
-    cell = function(character, characterProfession, profession)
-      if not characterProfession.catchUpCurrencyInfo then
-        return {
-          text = "-",
-          onEnter = function(cellFrame)
-            GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-            GameTooltip:SetText("No data", 1, 1, 1);
-            GameTooltip:AddLine("Log in to fetch the data for this character.", nil, nil, nil, true);
-            GameTooltip:Show()
-          end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
-      end
-
-      local catchUpCurrent = characterProfession.catchUpCurrencyInfo.quantity
-      local catchUpTotal = characterProfession.catchUpCurrencyInfo.maxQuantity
-      local textColor = WHITE_FONT_COLOR
-      if catchUpCurrent == catchUpTotal then
-        textColor = GREEN_FONT_COLOR
-      end
-
-      local sumPointsEarned = 0
-      local sumPointsTotal = 0
-      local requirements = {}
-
-      local progress = Utils:TableFilter(weeklyProgress, function(progress)
-        return progress.character == character and progress.profession == profession and (
-          progress.objective.typeID == Enum.WK_Objectives.ArtisanQuest
-          or progress.objective.typeID == Enum.WK_Objectives.Treasure
-          or progress.objective.typeID == Enum.WK_Objectives.Gathering
-          or progress.objective.typeID == Enum.WK_Objectives.TrainerQuest
-        )
-      end)
-      local hasGathering = Utils:TableFind(progress, function(prog)
-        return prog.objective.typeID == Enum.WK_Objectives.Gathering
-      end)
-      Utils:TableForEach(progress, function(prog)
-        local objectiveType = Utils:TableGet(Data.ObjectiveTypes, "id", prog.objective.typeID)
-        if not objectiveType then return end
-        if prog.questsTotal == 0 then return end
-        sumPointsEarned = sumPointsEarned + prog.pointsEarned
-        sumPointsTotal = sumPointsTotal + prog.pointsTotal
-
-        -- Only gathering professions require completed gathering before catch-up unlocks
-        if not hasGathering then return end
-        if not requirements[objectiveType.name] then
-          requirements[objectiveType.name] = {0, 0}
-        end
-        requirements[objectiveType.name][1] = requirements[objectiveType.name][1] + prog.pointsEarned
-        requirements[objectiveType.name][2] = requirements[objectiveType.name][2] + prog.pointsTotal
-      end)
-
-      return {
-        text = format(textColor:WrapTextInColorCode("%d / %d"), catchUpCurrent, catchUpTotal),
-        onEnter = function(cellFrame)
-          local showTooltip = function()
-            local color = WHITE_FONT_COLOR
-
-            GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-            GameTooltip:SetText("Catch-Up", 1, 1, 1)
-            color = sumPointsEarned == sumPointsTotal and GREEN_FONT_COLOR or WHITE_FONT_COLOR
-            GameTooltip:AddDoubleLine("Weekly Points:", format("%d / %d", sumPointsEarned, sumPointsTotal), nil, nil, nil, color.r, color.g, color.b)
-            color = catchUpCurrent - sumPointsEarned == catchUpTotal - sumPointsTotal and GREEN_FONT_COLOR or WHITE_FONT_COLOR
-            GameTooltip:AddDoubleLine("Catch-Up Points:", format("%d / %d", catchUpCurrent - sumPointsEarned, catchUpTotal - sumPointsTotal), nil, nil, nil, color.r, color.g, color.b)
-            color = catchUpCurrent == catchUpTotal and GREEN_FONT_COLOR or WHITE_FONT_COLOR
-            GameTooltip:AddDoubleLine("Total:", format("%d / %d", catchUpCurrent, catchUpTotal), nil, nil, nil, color.r, color.g, color.b)
-
-            if Utils:TableCount(requirements) > 0 then
-              GameTooltip:AddLine(" ")
-              GameTooltip:AddLine("Unlock Catch-Up this week:", nil, nil, nil, true)
-              Utils:TableForEach(requirements, function(value, name)
-                color = value[1] == value[2] and GREEN_FONT_COLOR or WHITE_FONT_COLOR
-                GameTooltip:AddDoubleLine(format("%s Points", name), format("%d / %d", value[1], value[2]), 1, 1, 1, color.r, color.g, color.b)
-              end)
-            end
-
-            if profession.catchUpItemID and profession.catchUpItemID > 0 then
-              local item = Data.cache.items[profession.catchUpItemID]
-              local itemCached = item and item:IsItemDataCached()
-              local icon = itemCached and item:GetItemIcon() or 134400
-              local name = itemCached and item:GetItemLink() or "Loading..."
-              GameTooltip:AddLine(" ")
-              GameTooltip:AddLine("Catch-Up " .. (hasGathering and "Gathering" or "Patron Orders") .. ":")
-              GameTooltip:AddLine(format("%s %s", CreateSimpleTextureMarkup(icon, 13, 13), name))
-            end
-
-            GameTooltip:Show()
-          end
-
-          if profession.catchUpItemID and profession.catchUpItemID > 0 then
-            Data.cache.items[profession.catchUpItemID] = Item:CreateFromItemID(profession.catchUpItemID)
-            Data.cache.items[profession.catchUpItemID]:ContinueOnItemLoad(showTooltip)
-          end
-
-          showTooltip()
-        end,
-        onLeave = function()
-          GameTooltip:Hide()
-        end,
-      }
-    end,
-  })
 
   if unfiltered then
     return columns

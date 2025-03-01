@@ -121,6 +121,11 @@
 ---@field onLeave function?
 ---@field onClick function?
 
+---@class Octo_WeakAura
+---@field displayName string
+---@field wagoUrl string
+---@field auraName string
+
 ---@enum Enum.WK_Objectives
 Enum.WK_Objectives = {
   Unique = "Unique",
