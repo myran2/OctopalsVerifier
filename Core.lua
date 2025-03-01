@@ -9,7 +9,7 @@ local Checklist = addon.Checklist
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
-local Core = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0", "AceBucket-3.0")
+local Core = LibStub("AceAddon-3.0"):NewAddon(addonName, "AceConsole-3.0", "AceTimer-3.0", "AceEvent-3.0", "AceBucket-3.0", "AceComm-3.0")
 addon.Core = Core
 
 _G.OctopalsVerifier = addon
@@ -68,36 +68,21 @@ function Core:OnEnable()
     Data.cache.inCombat = false
     self:Render()
   end)
-  self:RegisterBucketEvent(
-    {
-      "ACTIVE_TALENT_GROUP_CHANGED",
-      "BAG_UPDATE_DELAYED",
-      "CHAT_MSG_LOOT",
-      "ITEM_COUNT_CHANGED",
-      "PLAYER_SPECIALIZATION_CHANGED",
-      "PLAYER_TALENT_UPDATE",
-      "QUEST_COMPLETE",
-      "QUEST_TURNED_IN",
-      "SKILL_LINES_CHANGED",
-      "TRAIT_CONFIG_UPDATED",
-      "UNIT_INVENTORY_CHANGED",
-    },
-    3,
-    function()
-      Data.cache.weeklyProgress = {}
-      Data:ScanCharacter()
-      self:Render()
-    end
-  )
-
-  self:RegisterBucketEvent({"CALENDAR_UPDATE_EVENT_LIST",}, 1, function()
-    Data.cache.weeklyProgress = {}
-    Data:ScanCalendar()
-    self:Render()
+  self:RegisterComm("OCTOPALS_REP", function(prefix, text, _, sender)
+      print("Prefix: " .. prefix)
+      print("Text: " .. text)
+      print("Sender: " .. sender)
   end)
-  local currentCalendarTime = C_DateAndTime.GetCurrentCalendarTime()
-  C_Calendar.SetAbsMonth(currentCalendarTime.month, currentCalendarTime.year)
-  C_Calendar.OpenCalendar()
+  self:RegisterComm("OCTOPALS_REP2", function(prefix, text, _, sender)
+    print("Prefix: " .. prefix)
+    print("Text: " .. text)
+    print("Sender: " .. sender)
+  end)
+  self:RegisterComm("OCTOPALS_REP3", function(prefix, text, _, sender)
+    print("Prefix: " .. prefix)
+    print("Text: " .. text)
+    print("Sender: " .. sender)
+  end)
 
   Data:ScanCharacter()
   self:Render()

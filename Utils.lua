@@ -152,3 +152,35 @@ function Utils:TableForEach(tbl, callback)
   end
   return tbl
 end
+
+--- from https://wowwiki-archive.fandom.com/wiki/USERAPI_StringHash
+---@param text string the text to be hashed
+---@return number numeric hash of the text
+function Utils:StringHash(text)
+  local counter = 1
+  local len = string.len(text)
+  for i = 1, len, 3 do
+    counter = math.fmod(counter * 8161, 4294967279) + -- 2^32 - 17: Prime!
+      (string.byte(text, i) * 16776193) +
+      ((string.byte(text, i + 1) or (len - i + 256)) * 8372226) +
+      ((string.byte(text, i + 2) or (len - i + 256)) * 3932164)
+  end
+  return math.fmod(counter, 4294967291) -- 2^32 - 5: Prime (and different from the prime in the loop)
+end
+
+--- from https://github.com/WeakAuras/WeakAuras2/blob/main/WeakAuras/AuraEnvironment.lua#L52C1-L66C4
+function Utils:IterateGroupMembers(reversed, forceParty)
+  local unit = (not forceParty and IsInRaid()) and "raid" or "party"
+  local numGroupMembers = unit == "party" and GetNumSubgroupMembers() or GetNumGroupMembers()
+  local i = reversed and numGroupMembers or (unit == "party" and 0 or 1)
+  return function()
+    local ret
+    if i == 0 and unit == "party" then
+      ret = "player"
+    elseif i <= numGroupMembers and i > 0 then
+      ret = unit .. i
+    end
+    i = i + (reversed and -1 or 1)
+    return ret
+  end
+end
