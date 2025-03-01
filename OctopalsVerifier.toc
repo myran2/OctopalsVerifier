@@ -1,0 +1,31 @@
+## Interface: 110100
+## Title: OctopalsVerifier
+## Notes: Utility for verifying your raid's weakauras.
+## Version: @project-version@
+## IconTexture: Interface\AddOns\OctopalsVerifier\Media\Icon.blp
+## SavedVariables: OctopalsVerifierDB
+## X-Website: https://github.com/myran2/OctopalsVerifier
+
+Libs\LibStub\LibStub.lua
+Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
+Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
+Libs\LibDBIcon-1.0\lib.xml
+
+Libs\AceAddon-3.0\AceAddon-3.0.xml
+Libs\AceEvent-3.0\AceEvent-3.0.xml
+Libs\AceTimer-3.0\AceTimer-3.0.xml
+Libs\AceBucket-3.0\AceBucket-3.0.xml
+Libs\AceDB-3.0\AceDB-3.0.xml
+Libs\AceConsole-3.0\AceConsole-3.0.xml
+Libs\AceGUI-3.0\AceGUI-3.0.xml
+Libs\AceConfig-3.0\AceConfig-3.0.xml
+
+Types.lua
+Constants.lua
+Utils.lua
+Interface.lua
+Data.lua
+
+Checklist.lua
+Main.lua
+Core.lua
