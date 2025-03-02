@@ -27,6 +27,7 @@ Utils.lua
 Interface.lua
 Data.lua
 Checks.lua
+Comms.lua
 
 Checklist.lua
 Main.lua

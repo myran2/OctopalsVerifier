@@ -3,6 +3,7 @@
 ---@field weeklyReset integer?
 ---@field minimap {minimapPos: number, hide: boolean, lock: boolean }
 ---@field characters table<string, WK_Character>
+---@field raidMembers table<string, Octo_RaidMember>
 ---@field main WK_DefaultGlobalMain
 
 ---@class WK_DefaultGlobalMain

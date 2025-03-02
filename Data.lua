@@ -29,6 +29,7 @@ Data.defaultDB = {
       lock = false
     },
     characters = {},
+    raidMembers = {},
     main = {
       hiddenColumns = {},
       windowScale = 100,

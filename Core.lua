@@ -5,6 +5,7 @@ local addon = select(2, ...)
 
 local Data = addon.Data
 local Main = addon.Main
+local Comms = addon.Comms
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
@@ -57,19 +58,16 @@ function Core:OnEnable()
     self:Render()
   end)
   self:RegisterComm("OCTOPALS_REP", function(prefix, text, _, sender)
-      print("Prefix: " .. prefix)
-      print("Text: " .. text)
-      print("Sender: " .. sender)
+    Comms.processV1Message(sender, text)
+    self:Render()
   end)
   self:RegisterComm("OCTOPALS_REP2", function(prefix, text, _, sender)
-    print("Prefix: " .. prefix)
-    print("Text: " .. text)
-    print("Sender: " .. sender)
+    Comms.processV2Message(sender, text)
+    self:Render()
   end)
   self:RegisterComm("OCTOPALS_REP3", function(prefix, text, _, sender)
-    print("Prefix: " .. prefix)
-    print("Text: " .. text)
-    print("Sender: " .. sender)
+    Comms.processV3Message(sender, text)
+    self:Render()
   end)
 
   self:Render()

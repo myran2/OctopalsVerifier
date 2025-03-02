@@ -381,12 +381,12 @@ function Main:Render()
     table.insert(tableData.rows, referenceRow)
     tableHeight = tableHeight + self.window.table.config.rows.height
 
-    Utils:TableForEach(Data:GetCharactersInRaid(), function(character)
+    Utils:TableForEach(Data.db.global.raidMembers, function(raidMember)
       ---@type WK_TableDataRow
       local row = {columns = {}}
       Utils:TableForEach(dataColumns, function(dataColumn)
         ---@type WK_TableDataCell
-        local cell = dataColumn.cell(character)
+        local cell = dataColumn.cell(raidMember)
         table.insert(row.columns, cell)
       end)
 
@@ -402,6 +402,17 @@ function Main:Render()
   self.window:SetHeight(math.min(tableHeight + Constants.TITLEBAR_HEIGHT, Constants.MAX_WINDOW_HEIGHT) + 2)
   self.window:SetClampRectInsets(self.window:GetWidth() / 2, self.window:GetWidth() / -2, 0, self.window:GetHeight() / 2)
   self.window:SetScale(Data.db.global.main.windowScale / 100)
+
+   -- request information from raid group if window is open
+   if self.window.IsShown then
+    local aceCom = LibStub("AceComm-3.0")
+    local message = ""
+      for index, entry in pairs(Utils:TableMap(Data.WeakAurasToTrack, function(weakaura) return weakaura.auraName end)) do
+          message = message .. entry .. '\n'
+      end
+      aceCom:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
+  end
+
 end
 
 ---Get columns for the table
