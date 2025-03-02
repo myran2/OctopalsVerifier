@@ -256,11 +256,20 @@ function UI:CreateTableFrame(config)
         columnFrame:SetScript("OnEnter", function() columnFrame:onEnterHandler(columnFrame) end)
         columnFrame:SetScript("OnLeave", function() columnFrame:onLeaveHandler(columnFrame) end)
         columnFrame:SetScript("OnClick", function() columnFrame:onClickHandler(columnFrame) end)
-        columnFrame.text:SetWordWrap(false)
-        columnFrame.text:SetJustifyH(columnTextAlign)
-        columnFrame.text:SetPoint("TOPLEFT", columnFrame, "TOPLEFT", tableFrame.config.cells.padding, -tableFrame.config.cells.padding)
-        columnFrame.text:SetPoint("BOTTOMRIGHT", columnFrame, "BOTTOMRIGHT", -tableFrame.config.cells.padding, tableFrame.config.cells.padding)
-        columnFrame.text:SetText(column.text)
+        if column.icon then
+          columnFrame.text:Hide()
+          columnFrame.tex = columnFrame:CreateTexture()
+          columnFrame.tex:SetPoint("CENTER")
+          columnFrame.tex:SetAtlas(column.icon, true)
+          columnFrame.tex:SetScale(.5)
+        else
+          columnFrame.text:Show()
+          columnFrame.text:SetWordWrap(false)
+          columnFrame.text:SetJustifyH(columnTextAlign)
+          columnFrame.text:SetPoint("TOPLEFT", columnFrame, "TOPLEFT", tableFrame.config.cells.padding, -tableFrame.config.cells.padding)
+          columnFrame.text:SetPoint("BOTTOMRIGHT", columnFrame, "BOTTOMRIGHT", -tableFrame.config.cells.padding, tableFrame.config.cells.padding)
+          columnFrame.text:SetText(column.text)
+        end
         columnFrame:Show()
 
         if column.backgroundColor then

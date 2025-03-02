@@ -453,13 +453,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {
-          text = Checks:GetCellContents('waVersion', character, Data:GetReferenceValues()),
-          onEnter = function() end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
+        return Checks:GetCellObject('waVersion', character, Data:GetReferenceValues())
       end,
     },
     {
@@ -479,13 +473,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {
-          text = Checks:GetCellContents('bwVersion', character, Data:GetReferenceValues()),
-          onEnter = function() end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
+        return Checks:GetCellObject('bwVersion', character, Data:GetReferenceValues())
       end,
     },
     {
@@ -505,13 +493,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {
-          text = Checks:GetCellContents('dbmVersion', character, Data:GetReferenceValues()),
-          onEnter = function() end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
+        return Checks:GetCellObject('dbmVersion', character, Data:GetReferenceValues())
       end,
     },
     {
@@ -531,13 +513,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {
-          text = Checks:GetCellContents('mrtVersion', character, Data:GetReferenceValues()),
-          onEnter = function() end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
+        return Checks:GetCellObject('mrtVersion', character, Data:GetReferenceValues())
       end,
     },
     {
@@ -557,13 +533,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {
-          text = Checks:GetCellContents('mrtNoteHash', character, Data:GetReferenceValues()),
-          onEnter = function() end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
+        return Checks:GetCellObject('mrtNoteHash', character, Data:GetReferenceValues())
       end,
     },
     {
@@ -583,23 +553,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {
-          text = Checks:GetCellContents('ignoreList', character, Data:GetReferenceValues()),
-          onEnter = function(cellFrame)
-            if character.ignoreList == nil or Utils:TableCount(character.ignoreList) == 0 then
-              return
-            end
-            GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-            GameTooltip:SetText(character.name .. "'s Ignore List", 1, 1, 1);
-            Utils:TableForEach(character.ignoreList, function(ignoredName)
-              GameTooltip:AddLine(ignoredName)
-            end)
-            GameTooltip:Show()
-          end,
-          onLeave = function()
-            GameTooltip:Hide()
-          end,
-        }
+        return Checks:GetCellObject('ignoreList', character, Data:GetReferenceValues())
       end,
     },
   }
@@ -622,9 +576,7 @@ function Main:GetMainColumns(unfiltered)
       toggleHidden = false,
       align = "CENTER",
       cell = function(character)
-        return {
-          text = Checks:GetCellContents('weakauras', character, Data:GetReferenceValues(), index),
-        }
+        return Checks:GetCellObject('weakauras', character, Data:GetReferenceValues(), index)
       end
     }
     table.insert(columns, dataColumn)

@@ -120,6 +120,7 @@ end
 
 ---Populate table with all characters currently in the group/raid.
 function Data:InitializeRaidMembers()
+  self.db.global.raidMembers = {}
   self.db.global.raidMembers[UnitGUID("player")] = self:InitializeReferenceValues()
 
   for unit in Utils:IterateGroupMembers() do
@@ -149,7 +150,7 @@ function Data:GetLiveRaidMembers()
     if b.receivedAt == 0 then
       return true
     end
-    return a.receivedAt > b.receivedAt
+    return a.receivedAt < b.receivedAt
   end)
 
   return raidMembers

@@ -104,6 +104,9 @@ function Checks:GetCheckValueAsString(field, index, row)
   end
 
   if field == 'ignoreList' then
+    if Utils:TableCount(row[field]) == 0 then
+      return "*Empty*"
+    end
     return tostring(Utils:TableCount(row[field]))
   end
 
@@ -114,26 +117,73 @@ end
 ---@param row Octo_RaidMember
 ---@param referenceRow Octo_RaidMember
 ---@param index number?
----@return string
 function Checks:GetCellContents(field, row, referenceRow, index)
   local value = Checks:GetCheckValueAsString(field, index, row)
   local referenceValue = Checks:GetCheckValueAsString(field, index, referenceRow)
 
+  -- "reference" row should just show the values.
   if row.GUID == UnitGUID("player") then
-    return value or "? Shouldn't happen ?"
+    return {
+      text = value
+    }
+
   end
 
   if row.receivedAt == 0 then
-    return "..."
+    return {
+      text = "...",
+      tooltip = function()
+        GameTooltip:SetText("No Response", 1, 1, 1);
+        GameTooltip:AddLine("Does this player have the verifier WeakAura installed?")
+      end
+    }
   end
 
   if value == nil then
-    return YELLOW_FONT_COLOR:WrapTextInColorCode("Not Supported")
+    return {
+      icon = "services-icon-warning",
+      tooltip = function()
+        GameTooltip:SetText("Not Supported", 1, 1, 1);
+        GameTooltip:AddLine("This player's verifier WeakAura is too old to support this check.")
+      end
+    }
   end
 
   if value == referenceValue then
-    return GREEN_FONT_COLOR:WrapTextInColorCode(value)
+    return {
+      icon = "common-icon-checkmark"
+    }
   end
 
-  return RED_FONT_COLOR:WrapTextInColorCode(value)
+  return {
+    icon = "common-icon-redx",
+    tooltip = function()
+      GameTooltip:SetText("Mismatch!", 1, 1, 1);
+      if value == nil or tonumber(value) <= 0 then
+        GameTooltip:AddDoubleLine(RED_FONT_COLOR:WrapTextInColorCode("Player doesn't have the Addon/WA enabled or installed."))
+      else
+        GameTooltip:AddDoubleLine(RED_FONT_COLOR:WrapTextInColorCode(value), "This value doesn't match yours.")
+      end
+    end
+  }
+end
+
+---@param field string
+---@param row Octo_RaidMember
+---@param referenceRow Octo_RaidMember
+---@param index number?
+---@return WK_TableDataCell
+function Checks:GetCellObject(field, row, referenceRow, index)
+  local cellContents = self:GetCellContents(field, row, referenceRow, index)
+  if cellContents.tooltip then
+    cellContents.onEnter = function(cellFrame)
+      GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+      cellContents.tooltip()
+      GameTooltip:Show()
+    end
+    cellContents.onLeave = function()
+      GameTooltip:Hide()
+    end
+  end
+  return cellContents
 end
