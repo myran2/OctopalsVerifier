@@ -16,7 +16,6 @@ _G.OctopalsVerifier = addon
 
 function Core:Render()
   Main:Render()
-  Checklist:Render()
 end
 
 function Core:OnInitialize()
