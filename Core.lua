@@ -20,32 +20,22 @@ function Core:Render()
 end
 
 function Core:OnInitialize()
-  _G["BINDING_NAME_WEEKLYKNOWLEDGE"] = "Show/Hide the window"
-  self:RegisterChatCommand("wk", function() Main:ToggleWindow() end)
-  self:RegisterChatCommand("weeklyknowledge", function() Main:ToggleWindow() end)
+  _G["BINDING_NAME_OCTOPALS_VERIFIER"] = "Show/Hide the window"
+  self:RegisterChatCommand("octo", function() Main:ToggleWindow() end)
+  self:RegisterChatCommand("waauditor", function() Main:ToggleWindow() end)
 
   Data:InitDB()
-  Data:MigrateDB()
-  if Data:TaskWeeklyReset() then
-    self:Print("Weekly Reset: Good job! Progress of your characters have been reset for a new week.")
-  end
 
-  local WKLDB = LibDataBroker:NewDataObject(addonName, {
+  local OVLDB = LibDataBroker:NewDataObject(addonName, {
     label = addonName,
     type = "launcher",
     icon = "Interface/AddOns/OctopalsVerifier/Media/Icon.blp",
     OnClick = function(...)
-      local _, b = ...
-      if b and b == "RightButton" then
-        Checklist:ToggleWindow()
-      else
-        Main:ToggleWindow()
-      end
+      Main:ToggleWindow()
     end,
     OnTooltipShow = function(tooltip)
       tooltip:SetText(addonName, 1, 1, 1)
-      tooltip:AddLine("|cff00ff00Left click|r to open OctopalsVerifier.", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
-      tooltip:AddLine("|cff00ff00Right click|r to open the Checklist.", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
+      tooltip:AddLine("|cff00ff00Click|r to open OctopalsVerifier.", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
       local dragText = "|cff00ff00Drag|r to move this icon"
       if Data.db.global.minimap.lock then
         dragText = dragText .. " |cffff0000(locked)|r"
@@ -53,7 +43,7 @@ function Core:OnInitialize()
       tooltip:AddLine(dragText .. ".", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b)
     end
   })
-  LibDBIcon:Register(addonName, WKLDB, Data.db.global.minimap)
+  LibDBIcon:Register(addonName, OVLDB, Data.db.global.minimap)
   LibDBIcon:AddButtonToCompartment(addonName)
 
   self:Render()
@@ -84,7 +74,6 @@ function Core:OnEnable()
     print("Sender: " .. sender)
   end)
 
-  Data:ScanCharacter()
   self:Render()
 end
 

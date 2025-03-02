@@ -133,6 +133,7 @@
 ---@field version number?
 
 ---@class Octo_RaidMember
+---@field GUID string|WOWGUID
 ---@field name string
 ---@field classID number
 ---@field waVersion string?
