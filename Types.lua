@@ -96,7 +96,7 @@
 ---@field align "LEFT" | "CENTER" | "RIGHT" | nil
 ---@field onEnter function?
 ---@field onLeave function?
----@field cell fun(character: WK_Character, characterProfession: WK_CharacterProfession, dataProfession: WK_Profession): WK_TableDataCell
+---@field cell fun(character: Octo_RaidMember): WK_TableDataCell
 ---@field toggleHidden boolean
 
 ---@class WK_TableData
@@ -125,6 +125,22 @@
 ---@field displayName string
 ---@field wagoUrl string
 ---@field auraName string
+---@field allowNested boolean
+
+---@class Octo_InstalledWeakAura
+---@field auraName string
+---@field wagoUrl string
+---@field version number?
+
+---@class Octo_RaidMember
+---@field name string
+---@field waVersion string?
+---@field bwVersion string?
+---@field dbmVersion string?
+---@field mrtVersion string?
+---@field mrtNoteHash string?
+---@field ignoreList table
+---@field weakauras table
 
 ---@enum Enum.WK_Objectives
 Enum.WK_Objectives = {

@@ -8,6 +8,7 @@ local Data = {}
 addon.Data = Data
 
 local Utils = addon.Utils
+local Checks = addon.Checks
 local AceDB = LibStub("AceDB-3.0")
 
 ---@type WK_DataCache
@@ -141,21 +142,25 @@ Data.WeakAurasToTrack = {
     displayName = "Assignment Pack",
     wagoUrl = "https://wago.io/NSNerubarPalace",
     auraName = "Northern Sky Nerub-ar Palace",
+    allowNested = false,
   },
   {
     displayName = "NS DB",
     wagoUrl = "https://wago.io/NorthernSky",
     auraName = "Northern Sky Database & Functions",
+    allowNested = false,
   },
   {
     displayName = "Interrupt",
     wagoUrl = "https://wago.io/InterruptAnchor",
     auraName = "Interrupt Anchor",
+    allowNested = false,
   },
   {
     displayName = "Auditor",
     wagoUrl = "https://wago.io/exrYkN05u",
     auraName = "Octopals Verifier Client",
+    allowNested = false,
   },
 }
 
@@ -898,4 +903,29 @@ function Data:GetWeeklyProgress()
   end)
 
   return self.cache.weeklyProgress
+end
+
+---Analyze all objectives and their progress
+---@return Octo_RaidMember[]
+function Data:GetCharactersInRaid()
+  ---@type Octo_RaidMember[]
+  local raiders = {
+    {
+      name = GetUnitName("player", true),
+      waVersion = Checks:WeakAurasVersion(),
+      bwVersion = Checks:BigWigsVersion(),
+      dbmVersion = Checks:BigWigsVersion(),
+      mrtVersion = Checks:MRTVersion(),
+      mrtNoteHash = Checks:HashedMRTNote(),
+      ignoreList = Checks:IgnoredRaiders(),
+      weakauras = {}
+    }
+  }
+  for unit in Utils:IterateGroupMembers() do
+    local playerName = GetUnitName(unit, true)
+    if playerName ~= GetUnitName("player", true) then
+    end
+  end
+
+  return raiders
 end

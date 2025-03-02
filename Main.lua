@@ -437,23 +437,17 @@ function Main:Render()
   end
 
   do -- Table data
-    Utils:TableForEach(Data:GetCharacters(), function(character)
-      Utils:TableForEach(character.professions, function(characterProfession)
-        if not characterProfession.enabled then return end
-        local profession = Utils:TableGet(Data.Professions, "skillLineID", characterProfession.skillLineID)
-        if not profession then return end
-
-        ---@type WK_TableDataRow
-        local row = {columns = {}}
-        Utils:TableForEach(dataColumns, function(dataColumn)
-          ---@type WK_TableDataCell
-          local cell = dataColumn.cell(character, characterProfession, profession)
-          table.insert(row.columns, cell)
-        end)
-
-        table.insert(tableData.rows, row)
-        tableHeight = tableHeight + self.window.table.config.rows.height
+    Utils:TableForEach(Data:GetCharactersInRaid(), function(character)
+      ---@type WK_TableDataRow
+      local row = {columns = {}}
+      Utils:TableForEach(dataColumns, function(dataColumn)
+        ---@type WK_TableDataCell
+        local cell = dataColumn.cell(character)
+        table.insert(row.columns, cell)
       end)
+
+      table.insert(tableData.rows, row)
+      tableHeight = tableHeight + self.window.table.config.rows.height
     end)
   end
 
@@ -519,7 +513,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = "TODO"}
+        return {text = character.waVersion}
       end,
     },
     {
@@ -539,7 +533,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = "TODO"}
+        return {text = character.bwVersion}
       end,
     },
     {
@@ -559,7 +553,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = "TODO"}
+        return {text = character.dbmVersion}
       end,
     },
     {
@@ -579,7 +573,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = "TODO"}
+        return {text = character.mrtVersion}
       end,
     },
     {
@@ -599,7 +593,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = "TODO"}
+        return {text = character.mrtNoteHash}
       end,
     },
     {
@@ -619,7 +613,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = "TODO"}
+        return {text = #character.ignoreList}
       end,
     },
   }

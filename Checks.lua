@@ -3,7 +3,7 @@ local addonName = select(1, ...)
 ---@class WK_Addon
 local addon = select(2, ...)
 
----@class WK_Checks
+---@class Octo_Checks
 local Checks = {}
 addon.Checks = Checks
 
