@@ -915,7 +915,7 @@ function Data:GetCharactersInRaid()
       classID = select(3, UnitClass("player")),
       waVersion = Checks:WeakAurasVersion(),
       bwVersion = Checks:BigWigsVersion(),
-      dbmVersion = Checks:BigWigsVersion(),
+      dbmVersion = Checks:DBMVersion(),
       mrtVersion = Checks:MRTVersion(),
       mrtNoteHash = Checks:HashedMRTNote(),
       ignoreList = Checks:IgnoredRaiders(),
