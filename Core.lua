@@ -5,7 +5,6 @@ local addon = select(2, ...)
 
 local Data = addon.Data
 local Main = addon.Main
-local Checklist = addon.Checklist
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 

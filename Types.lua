@@ -4,7 +4,6 @@
 ---@field minimap {minimapPos: number, hide: boolean, lock: boolean }
 ---@field characters table<string, WK_Character>
 ---@field main WK_DefaultGlobalMain
----@field checklist WK_DefaultGlobalhecklist
 
 ---@class WK_DefaultGlobalMain
 ---@field hiddenColumns table<string, boolean>
@@ -13,23 +12,6 @@
 ---@field windowBorder boolean Show the border?
 ---@field fontSize integer?
 ---@field checklistHelpTipClosed boolean?
-
----@class WK_DefaultGlobalhecklist
----@field hiddenColumns table<string, boolean>
----@field windowScale integer
----@field windowBackgroundColor {r: number, g: number, b: number, a: number}
----@field windowBorder boolean Show the border?
----@field windowTitlebar boolean
----@field fontSize integer?
----@field open boolean
----@field hideCompletedObjectives boolean
----@field hideInCombat boolean
----@field hideInDungeons boolean
----@field hideTable boolean
----@field hideTableHeader boolean
----@field hideUniqueObjectives boolean
----@field hideUniqueVendorObjectives boolean
----@field hideCatchUpObjectives boolean
 
 ---@class WK_Character
 ---@field GUID string|WOWGUID

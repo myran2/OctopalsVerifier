@@ -36,22 +36,6 @@ Data.defaultDB = {
       windowBorder = true,
       checklistHelpTipClosed = false,
     },
-    checklist = {
-      open = false,
-      hiddenColumns = {},
-      windowScale = 100,
-      windowBackgroundColor = {r = 0.11372549019, g = 0.14117647058, b = 0.16470588235, a = 1},
-      windowBorder = true,
-      windowTitlebar = true,
-      hideCompletedObjectives = false,
-      hideInCombat = false,
-      hideInDungeons = true,
-      hideTable = false,
-      hideTableHeader = false,
-      hideUniqueObjectives = false,
-      hideUniqueVendorObjectives = false,
-      hideCatchUpObjectives = false,
-    },
   }
 }
 
@@ -155,10 +139,6 @@ function Data:ScanCharacter()
   character.className = localizedClassName
   character.lastUpdate = GetServerTime()
 
-  -- Let's not track a character without a TWW profession
-  if Utils:TableCount(character.professions) < 1 then
-    self.db.global.characters[character.GUID] = nil
-  end
 end
 
 ---Get characters
