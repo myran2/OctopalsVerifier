@@ -25,39 +25,39 @@ function Checks:HashedMRTNote()
 end
 
 --- Installed WeakAuras version
----@return string?
+---@return string
 function Checks:WeakAurasVersion()
   if WeakAuras then
     return WeakAuras.versionString
   end
-  return nil
+  return "0"
 end
 
 --- Installed MRT version
----@return string?
+---@return string
 function Checks:MRTVersion()
   if _G.VMRT then
     return tostring(_G.VMRT.Addon.Version)
   end
-  return nil
+  return "0"
 end
 
 --- Installed BigWigs version
----@return string?
+---@return string
 function Checks:BigWigsVersion()
   if BigWigsLoader then
     return BigWigsLoader.GetVersionString()
   end
-  return nil
+  return "0"
 end
 
 --- Installed DBM version
----@return string?
+---@return string
 function Checks:DBMVersion()
   if DBM then
     return tostring(DBM.Revision)
   end
-  return nil
+  return "0"
 end
 
 --- Raiders in the group that are on this player's ignore list.
