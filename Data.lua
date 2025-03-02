@@ -912,17 +912,21 @@ function Data:GetCharactersInRaid()
   local raiders = {
     {
       name = GetUnitName("player", true),
+      classID = select(3, UnitClass("player")),
       waVersion = Checks:WeakAurasVersion(),
       bwVersion = Checks:BigWigsVersion(),
       dbmVersion = Checks:BigWigsVersion(),
       mrtVersion = Checks:MRTVersion(),
       mrtNoteHash = Checks:HashedMRTNote(),
       ignoreList = Checks:IgnoredRaiders(),
-      weakauras = {}
+      weakauras = Utils:TableMap(Data.WeakAurasToTrack, function(auraToTrack)
+        return Checks:WeakAuraVersionByName(auraToTrack.auraName)
+      end)
     }
   }
   for unit in Utils:IterateGroupMembers() do
     local playerName = GetUnitName(unit, true)
+    local classID = select(3, UnitClass("player"))
     if playerName ~= GetUnitName("player", true) then
     end
   end

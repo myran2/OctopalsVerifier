@@ -72,3 +72,22 @@ function Checks:IgnoredRaiders()
 
   return ignoredRaiders
 end
+
+function Checks:WeakAuraVersionByName(waName)
+  local waData = WeakAuras.GetData(waName)
+  if not waData then
+      return nil
+  end
+
+  if not waData['url'] then
+      -- local WA doesn't have a URL. not sure if this should be 0 or 1 yet
+      return 0
+  end
+
+  local waURL = waData['url']
+  local versionStr = waURL:match('.*/(%d+)$')
+  if not versionStr then
+      return 0
+  end
+  return tonumber(versionStr)
+end

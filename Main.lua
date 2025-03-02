@@ -613,12 +613,28 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = #character.ignoreList}
+        return {
+          text = Utils:TableCount(character.ignoreList),
+          onEnter = function(cellFrame)
+            if Utils:TableCount(character.ignoreList) == 0 then
+              return
+            end
+            GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+            GameTooltip:SetText(character.name .. "'s Ignore List", 1, 1, 1);
+            Utils:TableForEach(character.ignoreList, function(ignoredName)
+              GameTooltip:AddLine(ignoredName)
+            end)
+            GameTooltip:Show()
+          end,
+          onLeave = function()
+            GameTooltip:Hide()
+          end,
+        }
       end,
     },
   }
 
-  Utils:TableForEach(Data.WeakAurasToTrack, function(weakAuraCheck)
+  Utils:TableForEach(Data.WeakAurasToTrack, function(weakAuraCheck, index)
     ---@type WK_DataColumn
     local dataColumn = {
       name = weakAuraCheck.displayName,
@@ -637,7 +653,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       cell = function(character)
         return {
-          text = "TODO"
+          text = character.weakauras[index]
         }
       end
     }
