@@ -95,7 +95,7 @@ function Data:InitDB()
 end
 
 ---@return Octo_RaidMember
-function Data:GetReferenceValues()
+function Data:InitializeReferenceValues()
   return {
     name = GetUnitName("player", true),
     GUID = UnitGUID("player"),
@@ -113,9 +113,14 @@ function Data:GetReferenceValues()
   }
 end
 
+---@return Octo_RaidMember
+function Data:GetReferenceValues()
+  return self.db.global.raidMembers[UnitGUID("player")]
+end
+
 ---Populate table with all characters currently in the group/raid.
 function Data:InitializeRaidMembers()
-  self.db.global.raidMembers[UnitGUID("player")] = self:GetReferenceValues()
+  self.db.global.raidMembers[UnitGUID("player")] = self:InitializeReferenceValues()
 
   for unit in Utils:IterateGroupMembers() do
     local raidMember = Utils:TableCopy(self.defaultRaidMember)

@@ -91,3 +91,49 @@ function Checks:WeakAuraVersionByName(waName)
   end
   return tonumber(versionStr)
 end
+
+
+---@return string?
+function Checks:GetCheckValueAsString(field, index, row)
+  if row[field] == nil then
+    return nil
+  end
+
+  if type(row[field]) == 'table' and index ~= nil then
+    return tostring(row[field][index])
+  end
+
+  if field == 'ignoreList' then
+    return tostring(Utils:TableCount(row[field]))
+  end
+
+  return tostring(row[field])
+end
+
+---@param field string
+---@param row Octo_RaidMember
+---@param referenceRow Octo_RaidMember
+---@param index number?
+---@return string
+function Checks:GetCellContents(field, row, referenceRow, index)
+  local value = Checks:GetCheckValueAsString(field, index, row)
+  local referenceValue = Checks:GetCheckValueAsString(field, index, referenceRow)
+
+  if row.GUID == UnitGUID("player") then
+    return value or "? Shouldn't happen ?"
+  end
+
+  if row.receivedAt == 0 then
+    return "..."
+  end
+
+  if value == nil then
+    return YELLOW_FONT_COLOR:WrapTextInColorCode("Not Supported")
+  end
+
+  if value == referenceValue then
+    return GREEN_FONT_COLOR:WrapTextInColorCode(value)
+  end
+
+  return RED_FONT_COLOR:WrapTextInColorCode(value)
+end
