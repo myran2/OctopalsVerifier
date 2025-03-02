@@ -8,6 +8,7 @@ local Data = {}
 addon.Data = Data
 
 local Utils = addon.Utils
+local Checks = addon.Checks
 local AceDB = LibStub("AceDB-3.0")
 
 ---@type WK_DataCache
@@ -93,19 +94,36 @@ function Data:InitDB()
   )
 end
 
+---@return Octo_RaidMember
+function Data:GetReferenceValues()
+  return {
+    name = GetUnitName("player", true),
+    GUID = UnitGUID("player"),
+    classID = select(3, UnitClass("player")),
+    waVersion = Checks:WeakAurasVersion(),
+    bwVersion = Checks:BigWigsVersion(),
+    dbmVersion = Checks:DBMVersion(),
+    mrtVersion = Checks:MRTVersion(),
+    mrtNoteHash = Checks:HashedMRTNote(),
+    ignoreList = Checks:IgnoredRaiders(),
+    weakauras = Utils:TableMap(self.WeakAurasToTrack, function(auraToTrack)
+      return Checks:WeakAuraVersionByName(auraToTrack.auraName)
+    end)
+  }
+end
+
 ---Populate table with all characters currently in the group/raid.
----@return Octo_RaidMember[]
 function Data:InitializeRaidMembers()
-  ---@type Octo_RaidMember[]
-  local raiders = {}
+  self.db.global.raidMembers[UnitGUID("player")] = self:GetReferenceValues()
+
   for unit in Utils:IterateGroupMembers() do
     local raidMember = Utils:TableCopy(self.defaultRaidMember)
     raidMember.name = GetUnitName(unit, true)
     raidMember.GUID = UnitGUID(unit)
     raidMember.classID = select(3, UnitClass(unit))
     
-    self.db.global.raidMembers[raidMember.GUID] = raidMember
+    if raidMember.GUID ~= UnitGUID("player") then
+      self.db.global.raidMembers[raidMember.GUID] = raidMember
+    end
   end
-
-  return raiders
 end

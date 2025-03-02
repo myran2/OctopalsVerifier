@@ -7,7 +7,6 @@ local addon = select(2, ...)
 local Checks = {}
 addon.Checks = Checks
 
-local Data = addon.Data
 local Utils = addon.Utils
 
 --- Contents of MRT Note as a numeric hash.
@@ -91,22 +90,4 @@ function Checks:WeakAuraVersionByName(waName)
       return 0
   end
   return tonumber(versionStr)
-end
-
----@return Octo_RaidMember
-function Checks:GetReferenceValues()
-  return {
-    name = GetUnitName("player", true),
-    GUID = UnitGUID("player"),
-    classID = select(3, UnitClass("player")),
-    waVersion = Checks:WeakAurasVersion(),
-    bwVersion = Checks:BigWigsVersion(),
-    dbmVersion = Checks:DBMVersion(),
-    mrtVersion = Checks:MRTVersion(),
-    mrtNoteHash = Checks:HashedMRTNote(),
-    ignoreList = Checks:IgnoredRaiders(),
-    weakauras = Utils:TableMap(Data.WeakAurasToTrack, function(auraToTrack)
-      return Checks:WeakAuraVersionByName(auraToTrack.auraName)
-    end)
-  }
 end
