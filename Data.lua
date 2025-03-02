@@ -8,7 +8,6 @@ local Data = {}
 addon.Data = Data
 
 local Utils = addon.Utils
-local Checks = addon.Checks
 local AceDB = LibStub("AceDB-3.0")
 
 ---@type WK_DataCache
@@ -198,20 +197,6 @@ end
 function Data:GetCharactersInRaid()
   ---@type Octo_RaidMember[]
   local raiders = {
-    {
-      name = GetUnitName("player", true),
-      GUID = UnitGUID("player"),
-      classID = select(3, UnitClass("player")),
-      waVersion = Checks:WeakAurasVersion(),
-      bwVersion = Checks:BigWigsVersion(),
-      dbmVersion = Checks:DBMVersion(),
-      mrtVersion = Checks:MRTVersion(),
-      mrtNoteHash = Checks:HashedMRTNote(),
-      ignoreList = Checks:IgnoredRaiders(),
-      weakauras = Utils:TableMap(Data.WeakAurasToTrack, function(auraToTrack)
-        return Checks:WeakAuraVersionByName(auraToTrack.auraName)
-      end)
-    }
   }
   for unit in Utils:IterateGroupMembers() do
     local playerName = GetUnitName(unit, true)

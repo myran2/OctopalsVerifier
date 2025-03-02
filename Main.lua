@@ -12,6 +12,7 @@ local Utils = addon.Utils
 local UI = addon.UI
 local Data = addon.Data
 local Checklist = addon.Checklist
+local Checks = addon.Checks
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
 function Main:ToggleWindow()
@@ -368,6 +369,18 @@ function Main:Render()
   end
 
   do -- Table data
+    -- first row is always the player initiating the request.
+    local referenceCharacter = Checks:GetReferenceValues()
+    ---@type WK_TableDataRow
+    local referenceRow = {columns = {}}
+    Utils:TableForEach(dataColumns, function(dataColumn)
+      ---@type WK_TableDataCell
+      local cell = dataColumn.cell(referenceCharacter)
+      table.insert(referenceRow.columns, cell)
+    end)
+    table.insert(tableData.rows, referenceRow)
+    tableHeight = tableHeight + self.window.table.config.rows.height
+
     Utils:TableForEach(Data:GetCharactersInRaid(), function(character)
       ---@type WK_TableDataRow
       local row = {columns = {}}
