@@ -45,8 +45,14 @@ Data.defaultDB = {
 Data.WeakAurasToTrack = {
   {
     displayName = "Assignment Pack",
-    wagoUrl = "https://wago.io/NSNerubarPalace",
-    auraName = "Northern Sky Nerub-ar Palace",
+    wagoUrl = "https://wago.io/NSUndermine",
+    auraName = "Northern Sky Liberation of Undermine",
+    allowNested = false,
+  },
+  {
+    displayName = "Raid Pack",
+    wagoUrl = "https://wago.io/Undermine",
+    auraName = "Liberation of Undermine",
     allowNested = false,
   },
   {
@@ -62,7 +68,7 @@ Data.WeakAurasToTrack = {
     allowNested = false,
   },
   {
-    displayName = "Auditor",
+    displayName = "Verifier Client",
     wagoUrl = "https://wago.io/exrYkN05u",
     auraName = "Octopals Verifier Client",
     allowNested = false,

@@ -468,7 +468,7 @@ function Main:GetMainColumns(unfiltered)
       name = "MRT Note Hash",
       onEnter = function(cellFrame)
         GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("MRT Note", 1, 1, 1);
+        GameTooltip:SetText("MRT Note Hash", 1, 1, 1);
         GameTooltip:AddLine("Do the contents of this player's MRT note match yours?")
         -- GameTooltip:AddLine(" ")
         -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
