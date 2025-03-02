@@ -1,4 +1,4 @@
-package-as: WeeklyKnowledge
+package-as: OctopalsVerifier
 
 enable-nolib-creation: no
 

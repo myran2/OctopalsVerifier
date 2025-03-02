@@ -11,7 +11,6 @@ local Constants = addon.Constants
 local Utils = addon.Utils
 local UI = addon.UI
 local Data = addon.Data
-local Checklist = addon.Checklist
 local Checks = addon.Checks
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 local aceComm = LibStub("AceComm-3.0")
@@ -272,37 +271,6 @@ function Main:Render()
       self.window.titlebar.ColumnsButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
     end
 
-    do -- Checklist Button
-      self.window.titlebar.ChecklistButton = CreateFrame("Button", "$parentChecklistButton", self.window.titlebar)
-      self.window.titlebar.ChecklistButton:SetPoint("RIGHT", self.window.titlebar.ColumnsButton, "LEFT", 0, 0)
-      self.window.titlebar.ChecklistButton:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
-      self.window.titlebar.ChecklistButton:SetScript("OnEnter", function()
-        self.window.titlebar.ChecklistButton.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.ChecklistButton, 1, 1, 1, 0.05)
-        ---@diagnostic disable-next-line: param-type-mismatch
-        GameTooltip:SetOwner(self.window.titlebar.ChecklistButton, "ANCHOR_TOP")
-        GameTooltip:SetText("Checklist", 1, 1, 1, 1, true);
-        GameTooltip:AddLine("Toggle the Checklist window", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-        GameTooltip:Show()
-      end)
-      self.window.titlebar.ChecklistButton:SetScript("OnLeave", function()
-        self.window.titlebar.ChecklistButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.ChecklistButton, 1, 1, 1, 0)
-        GameTooltip:Hide()
-      end)
-      self.window.titlebar.ChecklistButton:SetScript("OnClick", function()
-        -- Data.db.global.main.checklistHelpTipClosed = true
-        Checklist:ToggleWindow()
-        self:Render()
-      end)
-
-      self.window.titlebar.ChecklistButton.Icon = self.window.titlebar:CreateTexture(self.window.titlebar.ChecklistButton:GetName() .. "Icon", "ARTWORK")
-      self.window.titlebar.ChecklistButton.Icon:SetPoint("CENTER", self.window.titlebar.ChecklistButton, "CENTER")
-      self.window.titlebar.ChecklistButton.Icon:SetSize(16, 16)
-      self.window.titlebar.ChecklistButton.Icon:SetTexture("Interface/AddOns/OctopalsVerifier/Media/Icon_Checklist.blp")
-      self.window.titlebar.ChecklistButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
-    end
-
     self.window.table = UI:CreateTableFrame({
       header = {
         enabled = true,
@@ -326,26 +294,6 @@ function Main:Render()
   if not self.window:IsVisible() then
     return
   end
-
-  -- do -- Show helptip for new checklist
-  --   local checklistHelpTipText = "Check out the new checklist!"
-  --   if Data.db.global.main.checklistHelpTipClosed then
-  --     HelpTip:Hide(self.window, checklistHelpTipText)
-  --   else
-  --     HelpTip:Show(
-  --       self.window,
-  --       {
-  --         text = checklistHelpTipText,
-  --         buttonStyle = HelpTip.ButtonStyle.Close,
-  --         targetPoint = HelpTip.Point.TopEdgeCenter,
-  --         onAcknowledgeCallback = function()
-  --           Data.db.global.main.checklistHelpTipClosed = true
-  --         end,
-  --       },
-  --       self.window.titlebar.ChecklistButton
-  --     )
-  --   end
-  -- end
 
   do -- Table Column config
     Utils:TableForEach(dataColumns, function(dataColumn)

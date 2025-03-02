@@ -29,6 +29,5 @@ Checks.lua
 Data.lua
 Comms.lua
 
-Checklist.lua
 Main.lua
 Core.lua
