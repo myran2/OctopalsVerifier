@@ -40,26 +40,6 @@ Data.defaultDB = {
   }
 }
 
----@type WK_Character
-Data.defaultCharacter = {
-  enabled = true,
-  lastUpdate = 0,
-  GUID = "",
-  name = "",
-  realmName = "",
-  level = 0,
-  factionEnglish = "",
-  factionName = "",
-  raceID = 0,
-  raceEnglish = "",
-  raceName = "",
-  classID = 0,
-  classFile = nil,
-  className = "",
-  professions = {},
-  completed = {},
-}
-
 ---@type Octo_WeakAura[]
 Data.WeakAurasToTrack = {
   {
@@ -88,6 +68,21 @@ Data.WeakAurasToTrack = {
   },
 }
 
+---@type Octo_RaidMember
+Data.defaultRaidMember = {
+  name = "",
+  GUID = "",
+  classID = 0,
+  waVersion = nil,
+  bwVersion = nil,
+  dbmVersion = nil,
+  mrtVersion = nil,
+  mrtNoteHash = nil,
+  ignoreList = nil,
+  weakauras = nil,
+  live = false,
+}
+
 function Data:InitDB()
   ---@class AceDBObject-3.0
   ---@field global WK_DefaultGlobal
@@ -98,16 +93,18 @@ function Data:InitDB()
   )
 end
 
----Analyze all objectives and their progress
+---Populate table with all characters currently in the group/raid.
 ---@return Octo_RaidMember[]
-function Data:GetCharactersInRaid()
+function Data:InitializeRaidMembers()
   ---@type Octo_RaidMember[]
   local raiders = {}
   for unit in Utils:IterateGroupMembers() do
-    local playerName = GetUnitName(unit, true)
-    local classID = select(3, UnitClass("player"))
-    if playerName ~= GetUnitName("player", true) then
-    end
+    local raidMember = Utils:TableCopy(self.defaultRaidMember)
+    raidMember.name = GetUnitName(unit, true)
+    raidMember.GUID = UnitGUID(unit)
+    raidMember.classID = select(3, UnitClass(unit))
+    
+    self.db.global.raidMembers[raidMember.GUID] = raidMember
   end
 
   return raiders

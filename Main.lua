@@ -14,13 +14,20 @@ local Data = addon.Data
 local Checklist = addon.Checklist
 local Checks = addon.Checks
 local LibDBIcon = LibStub("LibDBIcon-1.0")
+local aceComm = LibStub("AceComm-3.0")
 
 function Main:ToggleWindow()
   if not self.window then return end
   if self.window:IsVisible() then
     self.window:Hide()
   else
+    Data:InitializeRaidMembers()
     self.window:Show()
+    local message = ""
+      for index, entry in pairs(Utils:TableMap(Data.WeakAurasToTrack, function(weakaura) return weakaura.auraName end)) do
+          message = message .. entry .. '\n'
+      end
+      aceComm:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
   end
   self:Render()
 end
@@ -391,16 +398,6 @@ function Main:Render()
   self.window:SetClampRectInsets(self.window:GetWidth() / 2, self.window:GetWidth() / -2, 0, self.window:GetHeight() / 2)
   self.window:SetScale(Data.db.global.main.windowScale / 100)
 
-   -- request information from raid group if window is open
-   if self.window.IsShown then
-    local aceCom = LibStub("AceComm-3.0")
-    local message = ""
-      for index, entry in pairs(Utils:TableMap(Data.WeakAurasToTrack, function(weakaura) return weakaura.auraName end)) do
-          message = message .. entry .. '\n'
-      end
-      aceCom:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
-  end
-
 end
 
 ---Get columns for the table
@@ -559,7 +556,7 @@ function Main:GetMainColumns(unfiltered)
         return {
           text = character.ignoreList and Utils:TableCount(character.ignoreList) or "Not Supported",
           onEnter = function(cellFrame)
-            if Utils:TableCount(character.ignoreList) == 0 then
+            if character.ignoreList == nil or Utils:TableCount(character.ignoreList) == 0 then
               return
             end
             GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
@@ -596,7 +593,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       cell = function(character)
         return {
-          text = character.weakauras[index]
+          text = character.weakauras and character.weakauras[index] or ""
         }
       end
     }

@@ -2,7 +2,6 @@
 ---@field DBVersion integer?
 ---@field weeklyReset integer?
 ---@field minimap {minimapPos: number, hide: boolean, lock: boolean }
----@field characters table<string, WK_Character>
 ---@field raidMembers table<string, Octo_RaidMember>
 ---@field main WK_DefaultGlobalMain
 
@@ -13,24 +12,6 @@
 ---@field windowBorder boolean Show the border?
 ---@field fontSize integer?
 ---@field checklistHelpTipClosed boolean?
-
----@class WK_Character
----@field GUID string|WOWGUID
----@field enabled boolean
----@field name string
----@field realmName string
----@field level integer
----@field factionEnglish string
----@field factionName string
----@field raceID integer
----@field raceEnglish string
----@field raceName string
----@field classID integer
----@field classFile ClassFile?
----@field className string
----@field lastUpdate number
----@field professions WK_CharacterProfession[]
----@field completed table<integer, boolean>
 
 ---@class WK_Objective
 ---@field professionID integer
@@ -98,7 +79,8 @@
 ---@field mrtVersion string?
 ---@field mrtNoteHash string?
 ---@field ignoreList table?
----@field weakauras table
+---@field weakauras table?
+---@field live boolean
 
 ---@enum Enum.WK_Objectives
 Enum.WK_Objectives = {

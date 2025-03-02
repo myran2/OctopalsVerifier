@@ -36,7 +36,8 @@ function Comms.processV1Message(sender, text)
     ignoreList = nil,
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 5
-    end)
+    end),
+    live = true
   }
 end
 
@@ -78,7 +79,8 @@ function Comms.processV2d1Message(sender, text)
     ignoreList = fields[6] == ":)" and {} or Utils:ExplodeString(fields[6], ", "),
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 7
-    end)
+    end),
+    live = true
   }
 end
 
@@ -108,7 +110,8 @@ function Comms.processV2d2Message(sender, text)
     ignoreList = fields[7] == ":)" and {} or Utils:ExplodeString(fields[7], ", "),
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 8
-    end)
+    end),
+    live = true
   }
 end
 
@@ -134,6 +137,7 @@ function Comms.processV3Message(sender, text)
     mrtVersion = "TODO",
     mrtNoteHash = "TODO",
     ignoreList = {},
-    weakauras = {}
+    weakauras = {},
+    live = true
   }
 end

@@ -165,6 +165,7 @@
         "CreateSimpleTextureMarkup",
         "WeakAuras",
         "BigWigsLoader",
-        "DBM"
+        "DBM",
+        "LE_PARTY_CATEGORY_INSTANCE"
     ]
 }
