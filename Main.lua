@@ -223,78 +223,9 @@ function Main:Render()
       self.window.titlebar.SettingsButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
     end
 
-    do -- Characters Button
-      self.window.titlebar.CharactersButton = CreateFrame("DropdownButton", "$parentCharactersButton", self.window.titlebar)
-      self.window.titlebar.CharactersButton:SetPoint("RIGHT", self.window.titlebar.SettingsButton, "LEFT", 0, 0)
-      self.window.titlebar.CharactersButton:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
-      self.window.titlebar.CharactersButton:SetScript("OnEnter", function()
-        self.window.titlebar.CharactersButton.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.CharactersButton, 1, 1, 1, 0.05)
-        ---@diagnostic disable-next-line: param-type-mismatch
-        GameTooltip:SetOwner(self.window.titlebar.CharactersButton, "ANCHOR_TOP")
-        GameTooltip:SetText("Characters", 1, 1, 1, 1, true);
-        GameTooltip:AddLine("Enable/Disable your characters.", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-        GameTooltip:Show()
-      end)
-      self.window.titlebar.CharactersButton:SetScript("OnLeave", function()
-        self.window.titlebar.CharactersButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.CharactersButton, 1, 1, 1, 0)
-        GameTooltip:Hide()
-      end)
-      self.window.titlebar.CharactersButton.Icon = self.window.titlebar:CreateTexture(self.window.titlebar.CharactersButton:GetName() .. "Icon", "ARTWORK")
-      self.window.titlebar.CharactersButton.Icon:SetPoint("CENTER", self.window.titlebar.CharactersButton, "CENTER")
-      self.window.titlebar.CharactersButton.Icon:SetSize(14, 14)
-      self.window.titlebar.CharactersButton.Icon:SetTexture("Interface/AddOns/OctopalsVerifier/Media/Icon_Characters.blp")
-      self.window.titlebar.CharactersButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
-      self.window.titlebar.CharactersButton:SetupMenu(function(_, rootMenu)
-        Utils:TableForEach(Data:GetCharacters(true), function(character)
-          local name = character.name
-          if character.realmName then
-            name = format("%s - %s", character.name, character.realmName)
-          end
-          if character.classID then
-            local _, classFile = GetClassInfo(character.classID)
-            if classFile then
-              local color = C_ClassColor.GetClassColor(classFile)
-              if color then
-                name = color:WrapTextInColorCode(name)
-              end
-            end
-          end
-
-          local characterButton = rootMenu:CreateCheckbox(
-            name,
-            function() return character.enabled or false end,
-            function()
-              character.enabled = not character.enabled
-              self:Render()
-            end
-          )
-
-          if Utils:TableCount(character.professions) > 0 then
-            Utils:TableForEach(character.professions, function(characterProfession)
-              local profession = Utils:TableGet(Data.Professions, "skillLineID", characterProfession.skillLineID)
-              local professionName = "?"
-              if profession then
-                professionName = profession.name
-              end
-              characterButton:CreateCheckbox(
-                professionName,
-                function() return characterProfession.enabled or false end,
-                function()
-                  characterProfession.enabled = not characterProfession.enabled
-                  self:Render()
-                end
-              )
-            end)
-          end
-        end)
-      end)
-    end
-
     do -- Columns Button
       self.window.titlebar.ColumnsButton = CreateFrame("DropdownButton", "$parentColumnsButton", self.window.titlebar)
-      self.window.titlebar.ColumnsButton:SetPoint("RIGHT", self.window.titlebar.CharactersButton, "LEFT", 0, 0)
+      self.window.titlebar.ColumnsButton:SetPoint("RIGHT", self.window.titlebar.SettingsButton, "LEFT", 0, 0)
       self.window.titlebar.ColumnsButton:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
       self.window.titlebar.ColumnsButton:SetScript("OnEnter", function()
         self.window.titlebar.ColumnsButton.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)

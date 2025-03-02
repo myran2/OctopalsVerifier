@@ -134,6 +134,7 @@
 
 ---@class Octo_RaidMember
 ---@field name string
+---@field classID number
 ---@field waVersion string?
 ---@field bwVersion string?
 ---@field dbmVersion string?
