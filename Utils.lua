@@ -153,6 +153,21 @@ function Utils:TableForEach(tbl, callback)
   return tbl
 end
 
+-- Split a string into a table by a seperator
+---@param text string
+---@param sep string
+---@return table
+function Utils:ExplodeString(text, sep)
+  if sep == nil then
+    sep = "%s"
+  end
+  local t = {}
+  for str in string.gmatch(text, "([^"..sep.."]+)") do
+    table.insert(t, str)
+  end
+  return t
+end
+
 --- from https://wowwiki-archive.fandom.com/wiki/USERAPI_StringHash
 ---@param text string the text to be hashed
 ---@return number numeric hash of the text

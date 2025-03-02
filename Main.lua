@@ -369,18 +369,6 @@ function Main:Render()
   end
 
   do -- Table data
-    -- first row is always the player initiating the request.
-    local referenceCharacter = Checks:GetReferenceValues()
-    ---@type WK_TableDataRow
-    local referenceRow = {columns = {}}
-    Utils:TableForEach(dataColumns, function(dataColumn)
-      ---@type WK_TableDataCell
-      local cell = dataColumn.cell(referenceCharacter)
-      table.insert(referenceRow.columns, cell)
-    end)
-    table.insert(tableData.rows, referenceRow)
-    tableHeight = tableHeight + self.window.table.config.rows.height
-
     Utils:TableForEach(Data.db.global.raidMembers, function(raidMember)
       ---@type WK_TableDataRow
       local row = {columns = {}}
@@ -569,7 +557,7 @@ function Main:GetMainColumns(unfiltered)
       toggleHidden = true,
       cell = function(character)
         return {
-          text = Utils:TableCount(character.ignoreList),
+          text = character.ignoreList and Utils:TableCount(character.ignoreList) or "Not Supported",
           onEnter = function(cellFrame)
             if Utils:TableCount(character.ignoreList) == 0 then
               return

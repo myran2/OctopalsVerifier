@@ -124,7 +124,7 @@
 ---@field dbmVersion string?
 ---@field mrtVersion string?
 ---@field mrtNoteHash string?
----@field ignoreList table
+---@field ignoreList table?
 ---@field weakauras table
 
 ---@enum Enum.WK_Objectives
