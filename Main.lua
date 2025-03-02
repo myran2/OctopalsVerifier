@@ -376,7 +376,7 @@ function Main:Render()
   end
 
   do -- Table data
-    Utils:TableForEach(Data.db.global.raidMembers, function(raidMember)
+    Utils:TableForEach(Data:GetLiveRaidMembers(), function(raidMember)
       ---@type WK_TableDataRow
       local row = {columns = {}}
       Utils:TableForEach(dataColumns, function(dataColumn)
@@ -453,7 +453,9 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return {text = character.waVersion}
+        return {
+          text = character.waVersion
+        }
       end,
     },
     {

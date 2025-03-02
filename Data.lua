@@ -81,7 +81,7 @@ Data.defaultRaidMember = {
   mrtNoteHash = nil,
   ignoreList = nil,
   weakauras = nil,
-  live = false,
+  receivedAt = 0,
 }
 
 function Data:InitDB()
@@ -108,7 +108,8 @@ function Data:GetReferenceValues()
     ignoreList = Checks:IgnoredRaiders(),
     weakauras = Utils:TableMap(self.WeakAurasToTrack, function(auraToTrack)
       return Checks:WeakAuraVersionByName(auraToTrack.auraName)
-    end)
+    end),
+    receivedAt = GetServerTime()
   }
 end
 
@@ -121,9 +122,30 @@ function Data:InitializeRaidMembers()
     raidMember.name = GetUnitName(unit, true)
     raidMember.GUID = UnitGUID(unit)
     raidMember.classID = select(3, UnitClass(unit))
-    
+
     if raidMember.GUID ~= UnitGUID("player") then
       self.db.global.raidMembers[raidMember.GUID] = raidMember
     end
   end
+end
+
+-- Everyone in the raid that has sent a query response
+function Data:GetLiveRaidMembers()
+  local raidMembers = Utils:TableFilter(self.db.global.raidMembers, function(raidMember)
+    -- return raidMember.receivedAt > 0
+    return true
+  end)
+
+  -- most recently recieved comes first, but 0 comes last.
+  table.sort(raidMembers, function(a, b)
+    if a.receivedAt == 0 then
+      return false
+    end
+    if b.receivedAt == 0 then
+      return true
+    end
+    return a.receivedAt > b.receivedAt
+  end)
+
+  return raidMembers
 end

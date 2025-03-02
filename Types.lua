@@ -80,7 +80,7 @@
 ---@field mrtNoteHash string?
 ---@field ignoreList table?
 ---@field weakauras table?
----@field live boolean
+---@field receivedAt number
 
 ---@enum Enum.WK_Objectives
 Enum.WK_Objectives = {

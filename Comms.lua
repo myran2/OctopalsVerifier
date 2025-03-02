@@ -37,7 +37,7 @@ function Comms.processV1Message(sender, text)
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 5
     end),
-    live = true
+    receivedAt = GetServerTime()
   }
 end
 
@@ -80,7 +80,7 @@ function Comms.processV2d1Message(sender, text)
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 7
     end),
-    live = true
+    receivedAt = GetServerTime()
   }
 end
 
@@ -111,7 +111,7 @@ function Comms.processV2d2Message(sender, text)
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 8
     end),
-    live = true
+    receivedAt = GetServerTime()
   }
 end
 
@@ -138,6 +138,6 @@ function Comms.processV3Message(sender, text)
     mrtNoteHash = "TODO",
     ignoreList = {},
     weakauras = {},
-    live = true
+    receivedAt = GetServerTime()
   }
 end
