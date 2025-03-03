@@ -121,6 +121,20 @@ function Checks:GetCellContents(field, row, referenceRow, index)
   local value = Checks:GetCheckValueAsString(field, index, row)
   local referenceValue = Checks:GetCheckValueAsString(field, index, referenceRow)
 
+  -- this player has people in the raid on their ignore list!
+  -- this is a problem even for the "reference"
+  if field == 'ignoreList' and row[field] ~= nil and Utils:TableCount(row[field]) > 0 then
+    return {
+      icon = "common-icon-redx",
+      tooltip = function()
+        GameTooltip:SetText("Players Ignored:", 1, 1, 1);
+        Utils:TableForEach(row[field], function(ignoredName)
+          GameTooltip:AddLine(RED_FONT_COLOR:WrapTextInColorCode(ignoredName))
+        end)
+      end
+    }
+  end
+
   -- "reference" row should just show the values.
   if row.GUID == UnitGUID("player") then
     return {
