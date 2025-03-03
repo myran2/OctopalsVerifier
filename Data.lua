@@ -144,7 +144,6 @@ end
 -- Everyone in the raid that has sent a query response
 function Data:GetLiveRaidMembers()
   local raidMembers = Utils:TableFilter(self.db.global.raidMembers, function(raidMember)
-    -- return raidMember.receivedAt > 0
     return true
   end)
 
@@ -155,6 +154,10 @@ function Data:GetLiveRaidMembers()
     end
     if b.receivedAt == 0 then
       return true
+    end
+
+    if a.receivedAt == b.receivedAt then
+      return a.GUID == UnitGUID('player')
     end
     return a.receivedAt < b.receivedAt
   end)
