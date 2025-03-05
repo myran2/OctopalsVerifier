@@ -245,6 +245,7 @@ function UI:CreateTableFrame(config)
         if not columnFrame then
           columnFrame = CreateFrame("Button", "$parentCol" .. columnIndex, rowFrame)
           columnFrame.text = columnFrame:CreateFontString("$parentText", "OVERLAY")
+          columnFrame.tex = columnFrame:CreateTexture()
           columnFrame.text:SetFontObject("GameFontHighlightSmall")
           rowFrame.columns[columnIndex] = columnFrame
         end
@@ -257,8 +258,8 @@ function UI:CreateTableFrame(config)
         columnFrame:SetScript("OnLeave", function() columnFrame:onLeaveHandler(columnFrame) end)
         columnFrame:SetScript("OnClick", function() columnFrame:onClickHandler(columnFrame) end)
         if column.icon then
-          columnFrame.text:Hide()
-          columnFrame.tex = columnFrame:CreateTexture()
+          columnFrame.tex:Hide()
+          columnFrame.tex:Show()
           columnFrame.tex:SetPoint("CENTER")
           columnFrame.tex:SetAtlas(column.icon, true)
           columnFrame.tex:SetScale(.5)
