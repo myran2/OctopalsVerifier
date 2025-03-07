@@ -11,7 +11,7 @@
 ---@field windowBackgroundColor {r: number, g: number, b: number, a: number}
 ---@field windowBorder boolean Show the border?
 ---@field fontSize integer?
----@field checklistHelpTipClosed boolean?
+---@field weakAurasToTrack Octo_WeakAura[]
 
 ---@class WK_DataCache
 ---@field isDarkmoonOpen boolean

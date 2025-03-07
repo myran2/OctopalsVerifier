@@ -23,7 +23,7 @@ function Main:ToggleWindow()
     Data:InitializeRaidMembers()
     self.window:Show()
     local message = ""
-      for index, entry in pairs(Utils:TableMap(Data.WeakAurasToTrack, function(weakaura) return weakaura.auraName end)) do
+      for index, entry in pairs(Utils:TableMap(Data.db.global.main.weakAurasToTrack, function(weakaura) return weakaura.auraName end)) do
           message = message .. entry .. '\n'
       end
       aceComm:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
@@ -506,7 +506,7 @@ function Main:GetMainColumns(unfiltered)
     },
   }
 
-  Utils:TableForEach(Data.WeakAurasToTrack, function(weakAuraCheck, index)
+  Utils:TableForEach(Data.db.global.main.weakAurasToTrack, function(weakAuraCheck, index)
     ---@type WK_DataColumn
     local dataColumn = {
       name = weakAuraCheck.displayName,

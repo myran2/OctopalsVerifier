@@ -20,7 +20,7 @@ Data.cache = {
   weeklyProgress = {},
 }
 
-Data.DBVersion = 8
+Data.DBVersion = 1
 Data.defaultDB = {
   ---@type WK_DefaultGlobal
   global = {
@@ -29,50 +29,46 @@ Data.defaultDB = {
       hide = false,
       lock = false
     },
-    characters = {},
     raidMembers = {},
     main = {
       hiddenColumns = {},
       windowScale = 100,
       windowBackgroundColor = {r = 0.11372549019, g = 0.14117647058, b = 0.16470588235, a = 1},
       windowBorder = true,
-      checklistHelpTipClosed = false,
+      weakAurasToTrack = {
+        {
+          displayName = "Assignment Pack",
+          wagoUrl = "https://wago.io/NSUndermine",
+          auraName = "Northern Sky Liberation of Undermine",
+          allowNested = false,
+        },
+        {
+          displayName = "Raid Pack",
+          wagoUrl = "https://wago.io/Undermine",
+          auraName = "Liberation of Undermine",
+          allowNested = false,
+        },
+        {
+          displayName = "NS DB",
+          wagoUrl = "https://wago.io/NorthernSky",
+          auraName = "Northern Sky Database & Functions",
+          allowNested = false,
+        },
+        {
+          displayName = "Interrupt",
+          wagoUrl = "https://wago.io/InterruptAnchor",
+          auraName = "Interrupt Anchor",
+          allowNested = false,
+        },
+        {
+          displayName = "Verifier Client",
+          wagoUrl = "https://wago.io/exrYkN05u",
+          auraName = "Octopals Verifier Client",
+          allowNested = false,
+        },
+      }
     },
   }
-}
-
----@type Octo_WeakAura[]
-Data.WeakAurasToTrack = {
-  {
-    displayName = "Assignment Pack",
-    wagoUrl = "https://wago.io/NSUndermine",
-    auraName = "Northern Sky Liberation of Undermine",
-    allowNested = false,
-  },
-  {
-    displayName = "Raid Pack",
-    wagoUrl = "https://wago.io/Undermine",
-    auraName = "Liberation of Undermine",
-    allowNested = false,
-  },
-  {
-    displayName = "NS DB",
-    wagoUrl = "https://wago.io/NorthernSky",
-    auraName = "Northern Sky Database & Functions",
-    allowNested = false,
-  },
-  {
-    displayName = "Interrupt",
-    wagoUrl = "https://wago.io/InterruptAnchor",
-    auraName = "Interrupt Anchor",
-    allowNested = false,
-  },
-  {
-    displayName = "Verifier Client",
-    wagoUrl = "https://wago.io/exrYkN05u",
-    auraName = "Octopals Verifier Client",
-    allowNested = false,
-  },
 }
 
 ---@type Octo_RaidMember
@@ -112,7 +108,7 @@ function Data:InitializeReferenceValues()
     mrtVersion = Checks:MRTVersion(),
     mrtNoteHash = Checks:HashedMRTNote(),
     ignoreList = Checks:IgnoredRaiders(),
-    weakauras = Utils:TableMap(self.WeakAurasToTrack, function(auraToTrack)
+    weakauras = Utils:TableMap(Data.db.global.main.weakAurasToTrack, function(auraToTrack)
       return Checks:WeakAuraVersionByName(auraToTrack.auraName)
     end),
     receivedAt = GetServerTime()
