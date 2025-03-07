@@ -173,7 +173,7 @@ function Checks:GetCellContents(field, row, referenceRow, index)
     icon = "common-icon-redx",
     tooltip = function()
       GameTooltip:SetText("Mismatch!", 1, 1, 1);
-      if value == nil or tonumber(value) <= 0 then
+      if value == nil or value == '-1' or value == '0' then
         GameTooltip:AddDoubleLine(RED_FONT_COLOR:WrapTextInColorCode("Player doesn't have the Addon/WA enabled or installed."))
       else
         GameTooltip:AddDoubleLine(RED_FONT_COLOR:WrapTextInColorCode(value), "This value doesn't match yours.")
