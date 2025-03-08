@@ -28,6 +28,6 @@ Interface.lua
 Checks.lua
 Data.lua
 Comms.lua
-
+Settings.lua
 Main.lua
 Core.lua

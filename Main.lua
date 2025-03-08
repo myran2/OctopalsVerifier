@@ -12,6 +12,7 @@ local Utils = addon.Utils
 local UI = addon.UI
 local Data = addon.Data
 local Checks = addon.Checks
+local Settings = addon.Settings
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 local aceComm = LibStub("AceComm-3.0")
 
@@ -20,13 +21,8 @@ function Main:ToggleWindow()
   if self.window:IsVisible() then
     self.window:Hide()
   else
-    Data:InitializeRaidMembers()
+    self:RefreshTable()
     self.window:Show()
-    local message = ""
-      for index, entry in pairs(Utils:TableMap(Data.db.global.main.weakAurasToTrack, function(weakaura) return weakaura.auraName end)) do
-          message = message .. entry .. '\n'
-      end
-      aceComm:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
   end
   self:Render()
 end
@@ -271,6 +267,36 @@ function Main:Render()
       self.window.titlebar.ColumnsButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
     end
 
+    do -- Settings2 Button
+      self.window.titlebar.Settings2Button = CreateFrame("Button", "$parentSettings2Button", self.window.titlebar)
+      self.window.titlebar.Settings2Button:SetPoint("RIGHT", self.window.titlebar.ColumnsButton, "LEFT", 0, 0)
+      self.window.titlebar.Settings2Button:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
+      self.window.titlebar.Settings2Button:SetScript("OnEnter", function()
+        self.window.titlebar.Settings2Button.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)
+        Utils:SetBackgroundColor(self.window.titlebar.Settings2Button, 1, 1, 1, 0.05)
+        ---@diagnostic disable-next-line: param-type-mismatch
+        GameTooltip:SetOwner(self.window.titlebar.Settings2Button, "ANCHOR_TOP")
+        GameTooltip:SetText("Settings2", 1, 1, 1, 1, true);
+        GameTooltip:AddLine("Settings but in a new window", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+        GameTooltip:Show()
+      end)
+      self.window.titlebar.Settings2Button:SetScript("OnLeave", function()
+        self.window.titlebar.Settings2Button.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
+        Utils:SetBackgroundColor(self.window.titlebar.Settings2Button, 1, 1, 1, 0)
+        GameTooltip:Hide()
+      end)
+      self.window.titlebar.Settings2Button:SetScript("OnClick", function()
+        Settings:ToggleWindow()
+        self:Render()
+      end)
+
+      self.window.titlebar.Settings2Button.Icon = self.window.titlebar:CreateTexture(self.window.titlebar.Settings2Button:GetName() .. "Icon", "ARTWORK")
+      self.window.titlebar.Settings2Button.Icon:SetPoint("CENTER", self.window.titlebar.Settings2Button, "CENTER")
+      self.window.titlebar.Settings2Button.Icon:SetSize(12, 12)
+      self.window.titlebar.Settings2Button.Icon:SetTexture("Interface/AddOns/OctopalsVerifier/Media/Icon_Settings.blp")
+      self.window.titlebar.Settings2Button.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
+    end
+
     self.window.table = UI:CreateTableFrame({
       header = {
         enabled = true,
@@ -506,10 +532,10 @@ function Main:GetMainColumns(unfiltered)
     },
   }
 
-  Utils:TableForEach(Data.db.global.main.weakAurasToTrack, function(weakAuraCheck, index)
+  Utils:TableForEach(Data:GetTrackedWeakAuras(), function(weakAuraCheck, index)
     ---@type WK_DataColumn
     local dataColumn = {
-      name = weakAuraCheck.displayName,
+      name = weakAuraCheck.displayName ~= "" and weakAuraCheck.displayName or weakAuraCheck.auraName,
       onEnter = function(cellFrame)
         GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
         GameTooltip:SetText(weakAuraCheck.displayName, 1, 1, 1);
@@ -539,4 +565,13 @@ function Main:GetMainColumns(unfiltered)
   end)
 
   return filteredColumns
+end
+
+function Data:RefreshTable()
+  Data:InitializeRaidMembers()
+  local message = ""
+    for index, entry in pairs(Utils:TableMap(Data:GetTrackedWeakAuras(), function(weakaura) return weakaura.auraName end)) do
+        message = message .. entry .. '\n'
+    end
+    aceComm:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
 end

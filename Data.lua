@@ -34,7 +34,10 @@ Data.defaultDB = {
       hiddenColumns = {},
       windowScale = 100,
       windowBackgroundColor = {r = 0.11372549019, g = 0.14117647058, b = 0.16470588235, a = 1},
-      windowBorder = true,
+      windowBorder = true
+    },
+    settings = {
+      open = false,
       weakAurasToTrack = {
         {
           displayName = "Assignment Pack",
@@ -67,7 +70,7 @@ Data.defaultDB = {
           allowNested = false,
         },
       }
-    },
+    }
   }
 }
 
@@ -108,7 +111,7 @@ function Data:InitializeReferenceValues()
     mrtVersion = Checks:MRTVersion(),
     mrtNoteHash = Checks:HashedMRTNote(),
     ignoreList = Checks:IgnoredRaiders(),
-    weakauras = Utils:TableMap(Data.db.global.main.weakAurasToTrack, function(auraToTrack)
+    weakauras = Utils:TableMap(Data:GetTrackedWeakAuras(), function(auraToTrack)
       return Checks:WeakAuraVersionByName(auraToTrack.auraName)
     end),
     receivedAt = GetServerTime()
@@ -159,4 +162,10 @@ function Data:GetLiveRaidMembers()
   end)
 
   return raidMembers
+end
+
+function Data:GetTrackedWeakAuras()
+  return Utils:TableFilter(self.db.global.settings.weakAurasToTrack, function(weakAura)
+    return weakAura.auraName ~= "" and weakAura.displayName ~= ""
+  end)
 end

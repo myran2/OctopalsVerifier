@@ -6,6 +6,7 @@ local addon = select(2, ...)
 local Data = addon.Data
 local Main = addon.Main
 local Comms = addon.Comms
+local Settings = addon.Settings
 local LibDataBroker = LibStub("LibDataBroker-1.1")
 local LibDBIcon = LibStub("LibDBIcon-1.0")
 
@@ -16,6 +17,7 @@ _G.OctopalsVerifier = addon
 
 function Core:Render()
   Main:Render()
+  Settings:Render()
 end
 
 function Core:OnInitialize()

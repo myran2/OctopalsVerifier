@@ -4,6 +4,7 @@
 ---@field minimap {minimapPos: number, hide: boolean, lock: boolean }
 ---@field raidMembers table<string, Octo_RaidMember>
 ---@field main WK_DefaultGlobalMain
+---@field settings WK_DefaultGlobalSettings
 
 ---@class WK_DefaultGlobalMain
 ---@field hiddenColumns table<string, boolean>
@@ -11,6 +12,9 @@
 ---@field windowBackgroundColor {r: number, g: number, b: number, a: number}
 ---@field windowBorder boolean Show the border?
 ---@field fontSize integer?
+
+---@class WK_DefaultGlobalSettings
+---@field open boolean
 ---@field weakAurasToTrack Octo_WeakAura[]
 
 ---@class WK_DataCache
