@@ -4,7 +4,10 @@ local addonName = select(1, ...)
 local addon = select(2, ...)
 
 ---@class WK_Main
-local Main = {}
+local Main = {
+  ---@type Octo_RaidMember[]
+  raidMembers = {}
+}
 addon.Main = Main
 
 local Constants = addon.Constants
@@ -350,7 +353,7 @@ function Main:Render()
   end
 
   do -- Table data
-    Utils:TableForEach(Data:GetLiveRaidMembers(), function(raidMember)
+    Utils:TableForEach(self:GetLiveRaidMembers(), function(raidMember)
       ---@type WK_TableDataRow
       local row = {columns = {}}
       Utils:TableForEach(dataColumns, function(dataColumn)
@@ -427,7 +430,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return Checks:GetCellObject('waVersion', character, Data:GetReferenceValues())
+        return Checks:GetCellObject('waVersion', character, self:GetReferenceValues())
       end,
     },
     {
@@ -447,7 +450,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return Checks:GetCellObject('bwVersion', character, Data:GetReferenceValues())
+        return Checks:GetCellObject('bwVersion', character, self:GetReferenceValues())
       end,
     },
     {
@@ -467,7 +470,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return Checks:GetCellObject('dbmVersion', character, Data:GetReferenceValues())
+        return Checks:GetCellObject('dbmVersion', character, self:GetReferenceValues())
       end,
     },
     {
@@ -487,7 +490,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return Checks:GetCellObject('mrtVersion', character, Data:GetReferenceValues())
+        return Checks:GetCellObject('mrtVersion', character, self:GetReferenceValues())
       end,
     },
     {
@@ -507,7 +510,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return Checks:GetCellObject('mrtNoteHash', character, Data:GetReferenceValues())
+        return Checks:GetCellObject('mrtNoteHash', character, self:GetReferenceValues())
       end,
     },
     {
@@ -527,7 +530,7 @@ function Main:GetMainColumns(unfiltered)
       align = "CENTER",
       toggleHidden = true,
       cell = function(character)
-        return Checks:GetCellObject('ignoreList', character, Data:GetReferenceValues())
+        return Checks:GetCellObject('ignoreList', character, self:GetReferenceValues())
       end,
     },
   }
@@ -550,7 +553,7 @@ function Main:GetMainColumns(unfiltered)
       toggleHidden = false,
       align = "CENTER",
       cell = function(character)
-        return Checks:GetCellObject('weakauras', character, Data:GetReferenceValues(), index)
+        return Checks:GetCellObject('weakauras', character, self:GetReferenceValues(), index)
       end
     }
     table.insert(columns, dataColumn)
@@ -568,7 +571,7 @@ function Main:GetMainColumns(unfiltered)
 end
 
 function Main:RefreshTable()
-  Data:InitializeRaidMembers()
+  self:InitializeRaidMembers()
   local message = ""
   for index, entry in pairs(Utils:TableMap(Data:GetTrackedWeakAuras(), function(weakaura) return weakaura.auraName end)) do
       message = message .. entry .. '\n'
@@ -579,4 +582,68 @@ end
 
 function Main:ProcessWeakauraSettings()
   Main:RefreshTable()
+end
+
+function Main:InitializeReferenceValue()
+  self.raidMembers[UnitGUID("player")] = {
+    name = GetUnitName("player", true),
+    GUID = UnitGUID("player") or "",
+    classID = select(3, UnitClass("player")),
+    waVersion = Checks:WeakAurasVersion(),
+    bwVersion = Checks:BigWigsVersion(),
+    dbmVersion = Checks:DBMVersion(),
+    mrtVersion = Checks:MRTVersion(),
+    mrtNoteHash = Checks:HashedMRTNote(),
+    ignoreList = Checks:IgnoredRaiders(),
+    weakauras = Utils:TableMap(Data:GetTrackedWeakAuras(), function(auraToTrack)
+      return Checks:WeakAuraVersionByName(auraToTrack.auraName)
+    end),
+    receivedAt = GetServerTime()
+  }
+end
+
+---@return Octo_RaidMember
+function Main:GetReferenceValues()
+  return self.raidMembers[UnitGUID("player")]
+end
+
+---Populate table with all characters currently in the group/raid.
+function Main:InitializeRaidMembers()
+  self.raidMembers = {}
+  self:InitializeReferenceValue()
+
+  for unit in Utils:IterateGroupMembers() do
+    local raidMember = Utils:TableCopy(Data.defaultRaidMember)
+    raidMember.name = GetUnitName(unit, true)
+    raidMember.GUID = UnitGUID(unit)
+    raidMember.classID = select(3, UnitClass(unit))
+
+    if raidMember.GUID ~= UnitGUID("player") then
+      self.raidMembers[raidMember.GUID] = raidMember
+    end
+  end
+end
+
+-- Everyone in the raid that has sent a query response
+function Main:GetLiveRaidMembers()
+  local raidMembers = Utils:TableFilter(self.raidMembers, function(raidMember)
+    return true
+  end)
+
+  -- most recently recieved comes first, but 0 comes last.
+  table.sort(raidMembers, function(a, b)
+    if a.receivedAt == 0 then
+      return false
+    end
+    if b.receivedAt == 0 then
+      return true
+    end
+
+    if a.receivedAt == b.receivedAt then
+      return a.GUID == UnitGUID('player')
+    end
+    return a.receivedAt < b.receivedAt
+  end)
+
+  return raidMembers
 end

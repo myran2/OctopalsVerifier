@@ -2,7 +2,6 @@
 ---@field DBVersion integer?
 ---@field weeklyReset integer?
 ---@field minimap {minimapPos: number, hide: boolean, lock: boolean }
----@field raidMembers table<string, Octo_RaidMember>
 ---@field main WK_DefaultGlobalMain
 ---@field settings WK_DefaultGlobalSettings
 
