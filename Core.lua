@@ -72,6 +72,10 @@ function Core:OnEnable()
     self:Render()
   end)
 
+  self:RegisterMessage("OCTO_WA_SETTINGS_CHANGED", function()
+    Main:ProcessWeakauraSettings()
+  end)
+
   self:Render()
 end
 

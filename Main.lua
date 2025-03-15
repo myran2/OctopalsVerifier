@@ -567,11 +567,16 @@ function Main:GetMainColumns(unfiltered)
   return filteredColumns
 end
 
-function Data:RefreshTable()
+function Main:RefreshTable()
   Data:InitializeRaidMembers()
   local message = ""
-    for index, entry in pairs(Utils:TableMap(Data:GetTrackedWeakAuras(), function(weakaura) return weakaura.auraName end)) do
-        message = message .. entry .. '\n'
-    end
-    aceComm:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
+  for index, entry in pairs(Utils:TableMap(Data:GetTrackedWeakAuras(), function(weakaura) return weakaura.auraName end)) do
+      message = message .. entry .. '\n'
+  end
+  aceComm:SendCommMessage("OCTOPALS_QUERY", message, IsInGroup(LE_PARTY_CATEGORY_INSTANCE) and "INSTANCE_CHAT" or IsInRaid() and "RAID" or "PARTY")
+  self:Render()
+end
+
+function Main:ProcessWeakauraSettings()
+  Main:RefreshTable()
 end

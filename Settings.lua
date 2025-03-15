@@ -4,13 +4,17 @@ local addonName = select(1, ...)
 local addon = select(2, ...)
 
 ---@class WK_Settings
-local Settings = {}
+local Settings = {
+  ---@type Octo_WeakAura[]
+  weakAuras = {}
+}
 addon.Settings = Settings
 
 local Constants = addon.Constants
 local Utils = addon.Utils
 local UI = addon.UI
 local Data = addon.Data
+local aceEvent = LibStub("AceEvent-3.0")
 
 function Settings:ToggleWindow()
   if not self.window then return end
@@ -19,6 +23,7 @@ function Settings:ToggleWindow()
   else
     self.window:Show()
   end
+  self.weakAuras = Utils:TableCopy(Data.db.global.settings.weakAurasToTrack)
   Data.db.global.settings.open = self.window:IsVisible()
   self:Render()
 end
@@ -139,6 +144,20 @@ function Settings:Render()
     self.window.addWeakauraButton:SetText("Add WeakAura")
     self.window.addWeakauraButton:SetScript("OnClick", function() self:HandleAddNewWeakaura() end)
 
+    self.window.addWeakauraButton = CreateFrame("Button", "commitChangesButton", self.window)
+    self.window.addWeakauraButton:SetPoint("BOTTOM", self.window, "BOTTOM", 0, 0)
+    self.window.addWeakauraButton:SetSize(128, 21)
+    self.window.addWeakauraButton:SetNormalFontObject(GameFontNormal)
+    self.window.addWeakauraButton:SetHighlightFontObject(GameFontHighlight)
+    self.window.addWeakauraButton:SetNormalTexture(130763) -- "Interface\\Buttons\\UI-DialogBox-Button-Up"
+    self.window.addWeakauraButton:GetNormalTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
+    self.window.addWeakauraButton:SetPushedTexture(130761) -- "Interface\\Buttons\\UI-DialogBox-Button-Down"
+    self.window.addWeakauraButton:GetPushedTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
+    self.window.addWeakauraButton:SetHighlightTexture(130762) -- "Interface\\Buttons\\UI-DialogBox-Button-Highlight"
+    self.window.addWeakauraButton:GetHighlightTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
+    self.window.addWeakauraButton:SetText("Save")
+    self.window.addWeakauraButton:SetScript("OnClick", function() self:CommitChanges() end)
+
     table.insert(UISpecialFrames, frameName)
   end
 
@@ -177,7 +196,7 @@ function Settings:Render()
   end
 
   local rows = 0
-  Utils:TableForEach(Data.db.global.settings.weakAurasToTrack, function(weakauraOption, index)
+  Utils:TableForEach(self.weakAuras, function(weakauraOption, index)
     ---@type WK_TableDataRow
     local row = {columns = {}}
     Utils:TableForEach(dataColumns, function(dataColumn)
@@ -200,7 +219,7 @@ function Settings:Render()
     windowHeight = 100
     self.window.table:Hide()
   else
-    windowHeight = windowHeight + tableHeight + self.window.table.config.rows.height + 2
+    windowHeight = windowHeight + tableHeight + (2 * self.window.table.config.rows.height) + 2
     self.window.table:Show()
   end
 
@@ -285,12 +304,12 @@ function Settings:GetColumns()
 end
 
 function Settings:HandleRemoveWeakauraByIndex(index)
-  table.remove(Data.db.global.settings.weakAurasToTrack, index)
+  table.remove(self.weakAuras, index)
   self:Render()
 end
 
 function Settings:HandleAddNewWeakaura()
-  local emptyRecords = Utils:TableFilter(Data.db.global.settings.weakAurasToTrack, function(weakaura) 
+  local emptyRecords = Utils:TableFilter(self.weakAuras, function(weakaura) 
     return weakaura.auraName == "" or weakaura.displayName == ""
   end)
 
@@ -298,7 +317,7 @@ function Settings:HandleAddNewWeakaura()
     return
   end
 
-  table.insert(Data.db.global.settings.weakAurasToTrack, {
+  table.insert(self.weakAuras, {
     displayName = "",
     auraName = "",
     wagoUrl = "",
@@ -306,4 +325,10 @@ function Settings:HandleAddNewWeakaura()
   })
 
   self:Render()
+end
+
+function Settings:CommitChanges()
+  Data.db.global.settings.weakAurasToTrack = Utils:TableCopy(self.weakAuras)
+  aceEvent:SendMessage("OCTO_WA_SETTINGS_CHANGED")
+  self:ToggleWindow()
 end
