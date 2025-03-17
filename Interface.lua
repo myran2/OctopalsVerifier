@@ -245,8 +245,31 @@ function UI:CreateTableFrame(config)
         if not columnFrame then
           columnFrame = CreateFrame("Button", "$parentCol" .. columnIndex, rowFrame)
           columnFrame.text = columnFrame:CreateFontString("$parentText", "OVERLAY")
-          columnFrame.tex = columnFrame:CreateTexture()
           columnFrame.text:SetFontObject("GameFontHighlightSmall")
+          columnFrame.text:SetWordWrap(false)
+          columnFrame.text:SetJustifyH(columnTextAlign)
+          columnFrame.text:SetPoint("TOPLEFT", columnFrame, "TOPLEFT", tableFrame.config.cells.padding, -tableFrame.config.cells.padding)
+          columnFrame.text:SetPoint("BOTTOMRIGHT", columnFrame, "BOTTOMRIGHT", -tableFrame.config.cells.padding, tableFrame.config.cells.padding)
+
+          columnFrame.editBox = CreateFrame("EditBox", nil, columnFrame, "BackdropTemplate")
+          columnFrame.editBox:SetMaxLetters(64)
+          columnFrame.editBox:SetFontObject("GameFontHighlightSmall")
+          columnFrame.editBox:SetWidth(columnWidth - 10)
+          columnFrame.editBox:SetHeight(Constants.TABLE_ROW_HEIGHT - 4)
+          columnFrame.editBox:SetJustifyV("BOTTOM")
+          columnFrame.editBox:SetTextInsets(10, 10, 0, 0)
+          columnFrame.editBox:SetPoint("LEFT", columnFrame, "LEFT", 3, 0)
+          columnFrame.editBox:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 8, insets = {left = 4, right = 4, top = 4, bottom = 4}})
+          columnFrame.editBox:SetBackdropBorderColor(0, 0, 0, .5)
+          columnFrame.editBox:SetScript("OnTextChanged", function()
+            column.text = columnFrame.editBox:GetText() ~= "" and columnFrame.editBox:GetText()
+          end)
+
+          columnFrame.tex = columnFrame:CreateTexture()
+          columnFrame.tex:SetPoint("CENTER")
+          columnFrame.tex:SetAtlas(column.icon, true)
+          columnFrame.tex:SetScale(.5)
+
           rowFrame.columns[columnIndex] = columnFrame
         end
 
@@ -260,18 +283,19 @@ function UI:CreateTableFrame(config)
         if column.icon then
           columnFrame.text:SetText("")
           columnFrame.tex:Hide()
+          columnFrame.editBox:Hide()
           columnFrame.tex:Show()
-          columnFrame.tex:SetPoint("CENTER")
-          columnFrame.tex:SetAtlas(column.icon, true)
-          columnFrame.tex:SetScale(.5)
         else
           columnFrame.tex:Hide()
-          columnFrame.text:Show()
-          columnFrame.text:SetWordWrap(false)
-          columnFrame.text:SetJustifyH(columnTextAlign)
-          columnFrame.text:SetPoint("TOPLEFT", columnFrame, "TOPLEFT", tableFrame.config.cells.padding, -tableFrame.config.cells.padding)
-          columnFrame.text:SetPoint("BOTTOMRIGHT", columnFrame, "BOTTOMRIGHT", -tableFrame.config.cells.padding, tableFrame.config.cells.padding)
-          columnFrame.text:SetText(column.text)
+          if column.editable == true then
+            columnFrame.text:Hide()
+            columnFrame.editBox:Show()
+            columnFrame.editBox:SetText(column.text)
+          else
+            columnFrame.editBox:Hide()
+            columnFrame.text:Show()
+            columnFrame.text:SetText(column.text)
+          end
         end
         columnFrame:Show()
 

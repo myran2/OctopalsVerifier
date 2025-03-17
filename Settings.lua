@@ -255,6 +255,7 @@ function Settings:GetColumns()
       end,
       cell = function(weakAura, index)
         return {
+          editable = true,
           text = weakAura.auraName,
         }
       end,
@@ -274,19 +275,11 @@ function Settings:GetColumns()
       end,
       cell = function(weakAura, index)
         return {
+          editable = true,
           text = weakAura.displayName,
         }
       end,
     },
-    -- {
-    --   name = "Wago URL",
-    --   width = 250,
-    --   cell = function(weakAura, index)
-    --     return {
-    --       text = weakAura.wagoUrl,
-    --     }
-    --   end,
-    -- },
     {
       name = "Delete",
       width = 60,

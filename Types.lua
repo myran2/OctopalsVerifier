@@ -49,6 +49,7 @@
 ---@class WK_TableDataCell
 ---@field text string?
 ---@field icon string?
+---@field editable boolean?
 ---@field backgroundColor {r: number, g: number, b: number, a: number}?
 ---@field onEnter function?
 ---@field onLeave function?
