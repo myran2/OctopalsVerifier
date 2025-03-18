@@ -270,34 +270,34 @@ function Main:Render()
       self.window.titlebar.ColumnsButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
     end
 
-    do -- Settings2 Button
-      self.window.titlebar.Settings2Button = CreateFrame("Button", "$parentSettings2Button", self.window.titlebar)
-      self.window.titlebar.Settings2Button:SetPoint("RIGHT", self.window.titlebar.ColumnsButton, "LEFT", 0, 0)
-      self.window.titlebar.Settings2Button:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
-      self.window.titlebar.Settings2Button:SetScript("OnEnter", function()
-        self.window.titlebar.Settings2Button.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.Settings2Button, 1, 1, 1, 0.05)
+    do -- WeakAuras Settings Button
+      self.window.titlebar.WeakAurasSettings = CreateFrame("Button", "$parentWeakAurasSettings", self.window.titlebar)
+      self.window.titlebar.WeakAurasSettings:SetPoint("RIGHT", self.window.titlebar.ColumnsButton, "LEFT", 0, 0)
+      self.window.titlebar.WeakAurasSettings:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
+      self.window.titlebar.WeakAurasSettings:SetScript("OnEnter", function()
+        self.window.titlebar.WeakAurasSettings.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)
+        Utils:SetBackgroundColor(self.window.titlebar.WeakAurasSettings, 1, 1, 1, 0.05)
         ---@diagnostic disable-next-line: param-type-mismatch
-        GameTooltip:SetOwner(self.window.titlebar.Settings2Button, "ANCHOR_TOP")
+        GameTooltip:SetOwner(self.window.titlebar.WeakAurasSettings, "ANCHOR_TOP")
         GameTooltip:SetText("Settings2", 1, 1, 1, 1, true);
         GameTooltip:AddLine("Settings but in a new window", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         GameTooltip:Show()
       end)
-      self.window.titlebar.Settings2Button:SetScript("OnLeave", function()
-        self.window.titlebar.Settings2Button.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.Settings2Button, 1, 1, 1, 0)
+      self.window.titlebar.WeakAurasSettings:SetScript("OnLeave", function()
+        self.window.titlebar.WeakAurasSettings.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
+        Utils:SetBackgroundColor(self.window.titlebar.WeakAurasSettings, 1, 1, 1, 0)
         GameTooltip:Hide()
       end)
-      self.window.titlebar.Settings2Button:SetScript("OnClick", function()
+      self.window.titlebar.WeakAurasSettings:SetScript("OnClick", function()
         Settings:ToggleWindow()
         self:Render()
       end)
 
-      self.window.titlebar.Settings2Button.Icon = self.window.titlebar:CreateTexture(self.window.titlebar.Settings2Button:GetName() .. "Icon", "ARTWORK")
-      self.window.titlebar.Settings2Button.Icon:SetPoint("CENTER", self.window.titlebar.Settings2Button, "CENTER")
-      self.window.titlebar.Settings2Button.Icon:SetSize(12, 12)
-      self.window.titlebar.Settings2Button.Icon:SetTexture("Interface/AddOns/OctopalsVerifier/Media/Icon_Settings.blp")
-      self.window.titlebar.Settings2Button.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
+      self.window.titlebar.WeakAurasSettings.Icon = self.window.titlebar:CreateTexture(self.window.titlebar.WeakAurasSettings:GetName() .. "Icon", "ARTWORK")
+      self.window.titlebar.WeakAurasSettings.Icon:SetPoint("CENTER", self.window.titlebar.WeakAurasSettings, "CENTER")
+      self.window.titlebar.WeakAurasSettings.Icon:SetSize(12, 12)
+      self.window.titlebar.WeakAurasSettings.Icon:SetTexture("Interface/AddOns/OctopalsVerifier/Media/Icon_Settings.blp")
+      self.window.titlebar.WeakAurasSettings.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
     end
 
     self.window.table = UI:CreateTableFrame({

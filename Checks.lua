@@ -76,7 +76,7 @@ end
 function Checks:WeakAuraVersionByName(waName)
   local waData = WeakAuras.GetData(waName)
   if not waData then
-      return nil
+      return -1
   end
 
   if not waData['url'] then
@@ -138,7 +138,7 @@ function Checks:GetCellContents(field, row, referenceRow, index)
   -- "reference" row should just show the values.
   if row.GUID == UnitGUID("player") then
     return {
-      text = value
+      text = value == '-1' and "*Not Installed*" or value
     }
 
   end

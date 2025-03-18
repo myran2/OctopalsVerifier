@@ -144,20 +144,6 @@ function Settings:Render()
     self.window.addWeakauraButton:SetText("Add WeakAura")
     self.window.addWeakauraButton:SetScript("OnClick", function() self:HandleAddNewWeakaura() end)
 
-    self.window.addWeakauraButton = CreateFrame("Button", "commitChangesButton", self.window)
-    self.window.addWeakauraButton:SetPoint("BOTTOM", self.window, "BOTTOM", 0, 0)
-    self.window.addWeakauraButton:SetSize(128, 21)
-    self.window.addWeakauraButton:SetNormalFontObject(GameFontNormal)
-    self.window.addWeakauraButton:SetHighlightFontObject(GameFontHighlight)
-    self.window.addWeakauraButton:SetNormalTexture(130763) -- "Interface\\Buttons\\UI-DialogBox-Button-Up"
-    self.window.addWeakauraButton:GetNormalTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-    self.window.addWeakauraButton:SetPushedTexture(130761) -- "Interface\\Buttons\\UI-DialogBox-Button-Down"
-    self.window.addWeakauraButton:GetPushedTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-    self.window.addWeakauraButton:SetHighlightTexture(130762) -- "Interface\\Buttons\\UI-DialogBox-Button-Highlight"
-    self.window.addWeakauraButton:GetHighlightTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-    self.window.addWeakauraButton:SetText("Save")
-    self.window.addWeakauraButton:SetScript("OnClick", function() self:CommitChanges() end)
-
     table.insert(UISpecialFrames, frameName)
   end
 
@@ -255,8 +241,12 @@ function Settings:GetColumns()
       end,
       cell = function(weakAura, index)
         return {
-          editable = true,
           text = weakAura.auraName,
+          editable = true,
+          onSave = function(newText)
+            weakAura.auraName = newText
+            self:CommitChanges()
+          end
         }
       end,
     },
@@ -275,8 +265,12 @@ function Settings:GetColumns()
       end,
       cell = function(weakAura, index)
         return {
-          editable = true,
           text = weakAura.displayName,
+          editable = true,
+          onSave = function(newText)
+            weakAura.displayName = newText
+            self:CommitChanges()
+          end
         }
       end,
     },
@@ -298,7 +292,7 @@ end
 
 function Settings:HandleRemoveWeakauraByIndex(index)
   table.remove(self.weakAuras, index)
-  self:Render()
+  self:CommitChanges()
 end
 
 function Settings:HandleAddNewWeakaura()
@@ -323,5 +317,5 @@ end
 function Settings:CommitChanges()
   Data.db.global.settings.weakAurasToTrack = Utils:TableCopy(self.weakAuras)
   aceEvent:SendMessage("OCTO_WA_SETTINGS_CHANGED")
-  self:ToggleWindow()
+  self:Render()
 end
