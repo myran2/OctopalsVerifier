@@ -132,7 +132,7 @@ function Settings:Render()
     self.window.table:SetPoint("BOTTOMRIGHT", self.window, "BOTTOMRIGHT", 0, 0)
 
     local buttonSize = self.window.table.config.rows.height - 5
-    self.window.addWeakauraButton = CreateFrame("Button", "addWeakauraButton", self.window)
+    self.window.addWeakauraButton = CreateFrame("Button", "addWeakauraButton", self.window, "SecureActionButtonTemplate")
     self.window.addWeakauraButton:SetPoint("BOTTOMLEFT", self.window.table, "BOTTOMLEFT", 10, 0)
     self.window.addWeakauraButton:SetSize(buttonSize, buttonSize)
     self.window.addWeakauraButton:SetNormalAtlas("WoWShare-Plus")
