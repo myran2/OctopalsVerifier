@@ -4,7 +4,10 @@ local addonName = select(1, ...)
 local addon = select(2, ...)
 
 ---@class WK_Data
-local Data = {}
+local Data = {
+    ---@type Octo_RaidMember[]
+    raidMembers = {}
+}
 addon.Data = Data
 
 local Utils = addon.Utils
@@ -103,3 +106,68 @@ function Data:GetTrackedWeakAuras()
     return weakAura.auraName ~= "" and weakAura.displayName ~= ""
   end)
 end
+
+function Data:InitializeReferenceValue()
+  Data.raidMembers[UnitGUID("player")] = {
+    name = GetUnitName("player", true),
+    GUID = UnitGUID("player") or "",
+    classID = select(3, UnitClass("player")),
+    waVersion = Checks:WeakAurasVersion(),
+    bwVersion = Checks:BigWigsVersion(),
+    dbmVersion = Checks:DBMVersion(),
+    mrtVersion = Checks:MRTVersion(),
+    mrtNoteHash = Checks:HashedMRTNote(),
+    ignoreList = Checks:IgnoredRaiders(),
+    weakauras = Utils:TableMap(Data:GetTrackedWeakAuras(), function(auraToTrack)
+      return Checks:WeakAuraVersionByName(auraToTrack.auraName)
+    end),
+    receivedAt = GetServerTime()
+  }
+end
+
+---@return Octo_RaidMember
+function Data:GetReferenceValues()
+  return self.raidMembers[UnitGUID("player")]
+end
+
+---Populate table with all characters currently in the group/raid.
+function Data:InitializeRaidMembers()
+  self.raidMembers = {}
+  self:InitializeReferenceValue()
+
+  for unit in Utils:IterateGroupMembers() do
+    local raidMember = Utils:TableCopy(Data.defaultRaidMember)
+    raidMember.name = GetUnitName(unit, true)
+    raidMember.GUID = UnitGUID(unit)
+    raidMember.classID = select(3, UnitClass(unit))
+
+    if raidMember.GUID ~= UnitGUID("player") then
+      Data.raidMembers[raidMember.GUID] = raidMember
+    end
+  end
+end
+
+-- Everyone in the raid that has sent a query response
+function Data:GetLiveRaidMembers()
+  local raidMembers = Utils:TableFilter(self.raidMembers, function(raidMember)
+    return true
+  end)
+
+  -- most recently recieved comes first, but 0 comes last.
+  table.sort(raidMembers, function(a, b)
+    if a.receivedAt == 0 then
+      return false
+    end
+    if b.receivedAt == 0 then
+      return true
+    end
+
+    if a.receivedAt == b.receivedAt then
+      return a.GUID == UnitGUID('player')
+    end
+    return a.receivedAt < b.receivedAt
+  end)
+
+  return raidMembers
+end
+

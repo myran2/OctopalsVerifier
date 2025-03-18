@@ -24,7 +24,7 @@ function Comms.processV1Message(sender, text)
 
   -- WA ver, BigWigs ver, mrt ver, mrt hash, WAs...
   local fields = Utils:ExplodeString(text, "\r\n")
-  Data.db.global.raidMembers[senderGUID] = {
+  Data.raidMembers[senderGUID] = {
     name = sender,
     GUID = senderGUID,
     classID = select(3, UnitClass(sender)),
@@ -67,7 +67,7 @@ function Comms.processV2d1Message(sender, text)
 
   -- client version, WA addon ver, bigwigs ver, mrt ver, mrt note hash, ignore list, WAs...
   local fields = Utils:ExplodeString(text, "\r\n")
-  Data.db.global.raidMembers[senderGUID] = {
+  Data.raidMembers[senderGUID] = {
     name = sender,
     GUID = senderGUID,
     classID = select(3, UnitClass(sender)),
@@ -98,7 +98,7 @@ function Comms.processV2d2Message(sender, text)
 
   -- client version, WA addon ver, bigwigs ver, dbm ver, mrt ver, mrt note hash, ignore list, WAs...
   local fields = Utils:ExplodeString(text, "\r\n")
-  Data.db.global.raidMembers[senderGUID] = {
+  Data.raidMembers[senderGUID] = {
     name = sender,
     GUID = senderGUID,
     classID = select(3, UnitClass(sender)),
@@ -127,7 +127,7 @@ function Comms.processV3Message(sender, text)
     return
   end
 
-  Data.db.global.raidMembers[senderGUID] = {
+  Data.raidMembers[senderGUID] = {
     name = sender,
     GUID = senderGUID,
     classID = select(3, UnitClass(sender)),

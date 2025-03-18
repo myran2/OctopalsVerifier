@@ -146,7 +146,6 @@ function UI:CreateTableFrame(config)
     scrollSpeedVertical = tableFrame.config.rows.height * 2
   })
 
-  ---Set the table data
   function tableFrame:SetData(data)
     self.data = data
     self:RenderTable()
@@ -298,10 +297,10 @@ function UI:CreateTableFrame(config)
         columnFrame:SetScript("OnLeave", function() columnFrame:onLeaveHandler(columnFrame) end)
         columnFrame:SetScript("OnClick", function() columnFrame:onClickHandler(columnFrame) end)
         if column.icon then
-          columnFrame.text:SetText("")
           columnFrame.tex:Hide()
-          columnFrame.editBox:Hide()
           columnFrame.tex:Show()
+          columnFrame.text:SetText("")
+          columnFrame.editBox:Hide()
         else
           columnFrame.tex:Hide()
           if column.editable == true then
