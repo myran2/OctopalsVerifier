@@ -23,7 +23,7 @@ end
 function Core:OnInitialize()
   _G["BINDING_NAME_OCTOPALS_VERIFIER"] = "Show/Hide the window"
   self:RegisterChatCommand("octo", function() Main:ToggleWindow() end)
-  self:RegisterChatCommand("waauditor", function() Main:ToggleWindow() end)
+  self:RegisterChatCommand("waaudit", function() Main:ToggleWindow() end)
 
   Data:InitDB()
 
