@@ -6,7 +6,8 @@ local addon = select(2, ...)
 ---@class WK_Settings
 local Settings = {
   ---@type Octo_WeakAura[]
-  weakAuras = {}
+  weakAuras = {},
+  open = false
 }
 addon.Settings = Settings
 
@@ -24,7 +25,7 @@ function Settings:ToggleWindow()
     self.window:Show()
   end
   self.weakAuras = Utils:TableCopy(Data.db.global.settings.weakAurasToTrack)
-  Data.db.global.settings.open = self.window:IsVisible()
+  self.open = self.window:IsVisible()
   self:Render()
 end
 
@@ -130,17 +131,12 @@ function Settings:Render()
     self.window.table:SetPoint("TOPLEFT", self.window, "TOPLEFT", 0, -Constants.TITLEBAR_HEIGHT)
     self.window.table:SetPoint("BOTTOMRIGHT", self.window, "BOTTOMRIGHT", 0, 0)
 
+    local buttonSize = self.window.table.config.rows.height - 5
     self.window.addWeakauraButton = CreateFrame("Button", "addWeakauraButton", self.window)
-    self.window.addWeakauraButton:SetPoint("BOTTOMLEFT", self.window.table, "BOTTOMLEFT", 0, self.window.table.config.rows.height / 2)
-    self.window.addWeakauraButton:SetSize(128, 21)
-    self.window.addWeakauraButton:SetNormalFontObject(GameFontNormal)
-    self.window.addWeakauraButton:SetHighlightFontObject(GameFontHighlight)
-    self.window.addWeakauraButton:SetNormalTexture(130763) -- "Interface\\Buttons\\UI-DialogBox-Button-Up"
-    self.window.addWeakauraButton:GetNormalTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-    self.window.addWeakauraButton:SetPushedTexture(130761) -- "Interface\\Buttons\\UI-DialogBox-Button-Down"
-    self.window.addWeakauraButton:GetPushedTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
-    self.window.addWeakauraButton:SetHighlightTexture(130762) -- "Interface\\Buttons\\UI-DialogBox-Button-Highlight"
-    self.window.addWeakauraButton:GetHighlightTexture():SetTexCoord(0.0, 1.0, 0.0, 0.71875)
+    self.window.addWeakauraButton:SetPoint("BOTTOMLEFT", self.window.table, "BOTTOMLEFT", 10, 0)
+    self.window.addWeakauraButton:SetSize(buttonSize, buttonSize)
+    self.window.addWeakauraButton:SetNormalAtlas("WoWShare-Plus")
+    -- self.window.addWeakauraButton:SetNormalAtlas("Gamepad_Rev_Plus_32")
     self.window.addWeakauraButton:SetText("Add WeakAura")
     self.window.addWeakauraButton:SetScript("OnClick", function() self:HandleAddNewWeakaura() end)
 
@@ -148,7 +144,7 @@ function Settings:Render()
   end
 
   -- Quick hotfix to avoid excessive rendering
-  if (not self.window:IsVisible() and not Data.db.global.settings.open) then
+  if (not self.window:IsVisible() and not self.open) then
     self.window:Hide()
     return
   end
@@ -205,14 +201,14 @@ function Settings:Render()
     windowHeight = 100
     self.window.table:Hide()
   else
-    windowHeight = windowHeight + tableHeight + (2 * self.window.table.config.rows.height) + 2
+    windowHeight = windowHeight + tableHeight + (self.window.table.config.rows.height) + 2
     self.window.table:Show()
   end
 
   windowHeight = math.min(windowHeight, maxWindowHeight)
   windowWidth  = math.max(windowWidth, minWindowWidth)
 
-  self.window:SetShown(Data.db.global.settings.open)
+  self.window:SetShown(self.open)
   self.window.border:SetShown(true)
   self.window.titlebar:SetShown(true)
   self.window.table:SetData(tableData)

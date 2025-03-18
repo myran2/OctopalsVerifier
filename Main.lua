@@ -276,8 +276,8 @@ function Main:Render()
         Utils:SetBackgroundColor(self.window.titlebar.WeakAurasSettings, 1, 1, 1, 0.05)
         ---@diagnostic disable-next-line: param-type-mismatch
         GameTooltip:SetOwner(self.window.titlebar.WeakAurasSettings, "ANCHOR_TOP")
-        GameTooltip:SetText("Settings2", 1, 1, 1, 1, true);
-        GameTooltip:AddLine("Settings but in a new window", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
+        GameTooltip:SetText("WeakAura Settings", 1, 1, 1, 1, true);
+        GameTooltip:AddLine("Add/Remove/Edit WeakAuras to be tracked.", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
         GameTooltip:Show()
       end)
       self.window.titlebar.WeakAurasSettings:SetScript("OnLeave", function()
