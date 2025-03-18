@@ -283,7 +283,6 @@ function UI:CreateTableFrame(config)
 
           columnFrame.tex = columnFrame:CreateTexture()
           columnFrame.tex:SetPoint("CENTER")
-          columnFrame.tex:SetAtlas(column.icon, true)
           columnFrame.tex:SetScale(.5)
 
           rowFrame.columns[columnIndex] = columnFrame
@@ -297,6 +296,7 @@ function UI:CreateTableFrame(config)
         columnFrame:SetScript("OnLeave", function() columnFrame:onLeaveHandler(columnFrame) end)
         columnFrame:SetScript("OnClick", function() columnFrame:onClickHandler(columnFrame) end)
         if column.icon then
+          columnFrame.tex:SetAtlas(column.icon, true)
           columnFrame.tex:Hide()
           columnFrame.tex:Show()
           columnFrame.text:SetText("")

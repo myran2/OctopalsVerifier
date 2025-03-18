@@ -165,7 +165,11 @@ function Checks:GetCellContents(field, row, referenceRow, index)
 
   if value == referenceValue then
     return {
-      icon = "common-icon-checkmark"
+      icon = "common-icon-checkmark",
+      tooltip = function()
+        GameTooltip:SetText("Match", 1, 1, 1);
+        GameTooltip:AddLine("This player's value for this check matches yours.")
+      end
     }
   end
 
