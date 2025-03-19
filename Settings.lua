@@ -240,7 +240,7 @@ function Settings:GetColumns()
           text = weakAura.auraName,
           editable = true,
           onSave = function(newText)
-            weakAura.auraName = newText
+            self.weakAuras[index].auraName = newText
             self:CommitChanges()
           end
         }
@@ -264,7 +264,7 @@ function Settings:GetColumns()
           text = weakAura.displayName,
           editable = true,
           onSave = function(newText)
-            weakAura.displayName = newText
+            self.weakAuras[index].displayName = newText
             self:CommitChanges()
           end
         }
