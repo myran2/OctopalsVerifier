@@ -192,7 +192,7 @@ function Settings:Render()
     rows = rows + 1
   end)
 
-  local windowWidth     = tableWidth
+  local windowWidth     = tableWidth + 2
   local windowHeight    = Constants.TITLEBAR_HEIGHT
   local minWindowWidth  = 200
   local maxWindowHeight = 800
