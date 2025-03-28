@@ -132,13 +132,19 @@ function Settings:Render()
     self.window.table:SetPoint("BOTTOMRIGHT", self.window, "BOTTOMRIGHT", 0, 0)
 
     local buttonSize = self.window.table.config.rows.height - 5
-    self.window.addWeakauraButton = CreateFrame("Button", "addWeakauraButton", self.window, "SecureActionButtonTemplate")
-    self.window.addWeakauraButton:SetPoint("BOTTOMLEFT", self.window.table, "BOTTOMLEFT", 10, 0)
-    self.window.addWeakauraButton:SetSize(buttonSize, buttonSize)
-    self.window.addWeakauraButton:SetNormalAtlas("WoWShare-Plus")
-    -- self.window.addWeakauraButton:SetNormalAtlas("Gamepad_Rev_Plus_32")
-    self.window.addWeakauraButton:SetText("Add WeakAura")
+    self.window.addWeakauraButton = CreateFrame("Button", "addWeakauraButton", self.window, "BackdropTemplate")
+    self.window.addWeakauraButton:SetPoint("BOTTOMLEFT", self.window.table, "BOTTOMLEFT", 5, 5)
+    self.window.addWeakauraButton:SetSize(buttonSize + 100, buttonSize)
+    -- self.window.addWeakauraButton:SetNormalAtlas("WoWShare-Plus")
+    self.window.addWeakauraButton:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 8, insets = {left = 4, right = 4, top = 4, bottom = 4}})
+    self.window.addWeakauraButton:SetBackdropBorderColor(255, 255, 255, .5)
     self.window.addWeakauraButton:SetScript("OnClick", function() self:HandleAddNewWeakaura() end)
+
+    self.window.addWeakauraButton.text = self.window.addWeakauraButton:CreateFontString("$parentText", "OVERLAY")
+    self.window.addWeakauraButton.text:SetFontObject("GameFontHighlightSmall")
+    self.window.addWeakauraButton.text:SetWordWrap(false)
+    self.window.addWeakauraButton.text:SetPoint("CENTER")
+    self.window.addWeakauraButton.text:SetText("Add WeakAura")
 
     table.insert(UISpecialFrames, frameName)
   end
