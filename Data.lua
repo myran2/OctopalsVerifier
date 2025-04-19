@@ -40,38 +40,7 @@ Data.defaultDB = {
     },
     settings = {
       open = false,
-      weakAurasToTrack = {
-        {
-          displayName = "Assignment Pack",
-          wagoUrl = "https://wago.io/NSUndermine",
-          auraName = "Northern Sky Liberation of Undermine",
-          allowNested = false,
-        },
-        {
-          displayName = "Raid Pack",
-          wagoUrl = "https://wago.io/Undermine",
-          auraName = "Liberation of Undermine",
-          allowNested = false,
-        },
-        {
-          displayName = "NS DB",
-          wagoUrl = "https://wago.io/NorthernSky",
-          auraName = "Northern Sky Database & Functions",
-          allowNested = false,
-        },
-        {
-          displayName = "Interrupt",
-          wagoUrl = "https://wago.io/InterruptAnchor",
-          auraName = "Interrupt Anchor",
-          allowNested = false,
-        },
-        {
-          displayName = "Verifier Client",
-          wagoUrl = "https://wago.io/exrYkN05u",
-          auraName = "Octopals Verifier Client",
-          allowNested = false,
-        },
-      }
+      weakAurasToTrack = {}
     }
   }
 }
@@ -99,6 +68,46 @@ function Data:InitDB()
     self.defaultDB,
     true
   )
+
+  if #self.db.global.settings.weakAurasToTrack == 0 then
+    self.db.global.settings.weakAurasToTrack = Data:GetDefaultWeakauras()
+  end
+end
+
+--@type Octo_WeakAura[]
+function Data:GetDefaultWeakAuras()
+  return {
+    {
+      displayName = "Assignment Pack",
+      wagoUrl = "https://wago.io/NSUndermine",
+      auraName = "Northern Sky Liberation of Undermine",
+      allowNested = false,
+    },
+    {
+      displayName = "Raid Pack",
+      wagoUrl = "https://wago.io/Undermine",
+      auraName = "Liberation of Undermine",
+      allowNested = false,
+    },
+    {
+      displayName = "NS DB",
+      wagoUrl = "https://wago.io/NorthernSky",
+      auraName = "Northern Sky Database & Functions",
+      allowNested = false,
+    },
+    {
+      displayName = "Interrupt",
+      wagoUrl = "https://wago.io/InterruptAnchor",
+      auraName = "Interrupt Anchor",
+      allowNested = false,
+    },
+    {
+      displayName = "Verifier Client",
+      wagoUrl = "https://wago.io/exrYkN05u",
+      auraName = "Octopals Verifier Client",
+      allowNested = false,
+    }
+  }
 end
 
 function Data:GetTrackedWeakAuras()
