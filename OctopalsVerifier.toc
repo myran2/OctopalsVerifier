@@ -5,6 +5,7 @@
 ## IconTexture: Interface\AddOns\OctopalsVerifier\Media\Icon.blp
 ## SavedVariables: OctopalsVerifierDB
 ## X-Website: https://github.com/myran2/OctopalsVerifier
+## X-Curse-Project-ID: 1261750
 
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.xml
