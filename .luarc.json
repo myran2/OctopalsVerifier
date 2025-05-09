@@ -164,7 +164,7 @@
         "UiMapPoint",
         "CreateSimpleTextureMarkup",
         "WeakAuras",
-        "BigWigsLoader",
+        "BigWigsAPI",
         "DBM",
         "LE_PARTY_CATEGORY_INSTANCE"
     ]

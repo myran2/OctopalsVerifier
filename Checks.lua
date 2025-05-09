@@ -44,8 +44,8 @@ end
 --- Installed BigWigs version
 ---@return string
 function Checks:BigWigsVersion()
-  if BigWigsLoader then
-    return BigWigsLoader.GetVersionString()
+  if BigWigsAPI then
+    return ("%d-%s"):format(BigWigsAPI.GetVersion(), BigWigsAPI.GetVersionHash())
   end
   return "0"
 end
