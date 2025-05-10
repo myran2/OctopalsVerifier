@@ -70,7 +70,7 @@ function Data:InitDB()
   )
 
   if #self.db.global.settings.weakAurasToTrack == 0 then
-    self.db.global.settings.weakAurasToTrack = Data:GetDefaultWeakauras()
+    self.db.global.settings.weakAurasToTrack = Data:GetDefaultWeakAuras()
   end
 end
 

@@ -166,6 +166,7 @@
         "WeakAuras",
         "BigWigsAPI",
         "DBM",
-        "LE_PARTY_CATEGORY_INSTANCE"
+        "LE_PARTY_CATEGORY_INSTANCE",
+        "GetUnitName"
     ]
 }
