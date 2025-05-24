@@ -23,6 +23,7 @@ function Main:ToggleWindow()
     Settings.window:Hide()
     Settings.open = false
   else
+    if Data.cache.inCombat then return end
     self:RefreshTable()
     self.window:Show()
   end
