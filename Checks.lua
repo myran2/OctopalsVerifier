@@ -148,7 +148,7 @@ function Checks:GetCellContents(field, row, referenceRow, index)
       text = "...",
       tooltip = function()
         GameTooltip:SetText("No Response", 1, 1, 1);
-        GameTooltip:AddLine("Does this player have the verifier WeakAura installed?")
+        GameTooltip:AddLine("This player doesn't have the verifier installed OR they were in combat at the time of the check.")
       end
     }
   end

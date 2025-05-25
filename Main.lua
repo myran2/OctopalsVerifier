@@ -23,6 +23,7 @@ function Main:ToggleWindow()
     Settings.window:Hide()
     Settings.open = false
   else
+    if Data.cache.inCombat then return end
     self:RefreshTable()
     self.window:Show()
   end
@@ -542,7 +543,7 @@ function Main:GetMainColumns(unfiltered)
         GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
         GameTooltip:SetText(weakAuraCheck.displayName, 1, 1, 1);
         GameTooltip:AddLine(weakAuraCheck.auraName, nil, nil, nil, true)
-        GameTooltip:AddLine(weakAuraCheck.wagoUrl, nil, nil, nil, true)
+        -- GameTooltip:AddLine(weakAuraCheck.wagoUrl, nil, nil, nil, true)
         GameTooltip:Show()
       end,
       onLeave = function()
