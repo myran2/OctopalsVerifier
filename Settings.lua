@@ -22,6 +22,7 @@ function Settings:ToggleWindow()
   if self.window:IsVisible() then
     self.window:Hide()
   else
+    if Data.cache.inCombat then return end
     self.window:Show()
   end
   self.weakAuras = Utils:TableCopy(Data.db.global.settings.weakAurasToTrack)
@@ -150,8 +151,7 @@ function Settings:Render()
   end
 
   -- Quick hotfix to avoid excessive rendering
-  if (not self.window:IsVisible() and not self.open) then
-    self.window:Hide()
+  if not self.window:IsVisible() then
     return
   end
 
@@ -222,9 +222,6 @@ function Settings:Render()
   self.window:SetHeight(windowHeight)
   self.window:SetClampRectInsets(self.window:GetWidth() / 2, self.window:GetWidth() / -2, 0, self.window:GetHeight() / 2)
   self.window:SetScale(Data.db.global.main.windowScale / 100)
-  if Data.cache.inCombat and Data.db.global.Settings.hideInCombat then
-    self.window:Hide()
-  end
 end
 
 function Settings:GetColumns()

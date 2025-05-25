@@ -23,6 +23,7 @@ function Main:ToggleWindow()
     Settings.window:Hide()
     Settings.open = false
   else
+    if Data.cache.inCombat then return end
     self:RefreshTable()
     self.window:Show()
   end
@@ -270,7 +271,7 @@ function Main:Render()
     end
 
     do -- WeakAuras Settings Button
-      self.window.titlebar.WeakAurasSettings = CreateFrame("Button", "$parentWeakAurasSettings", self.window.titlebar, "SecureActionButtonTemplate")
+      self.window.titlebar.WeakAurasSettings = CreateFrame("Button", "$parentWeakAurasSettings", self.window.titlebar)
       self.window.titlebar.WeakAurasSettings:SetPoint("RIGHT", self.window.titlebar.ColumnsButton, "LEFT", 0, 0)
       self.window.titlebar.WeakAurasSettings:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
       self.window.titlebar.WeakAurasSettings:SetScript("OnEnter", function()
@@ -542,7 +543,7 @@ function Main:GetMainColumns(unfiltered)
         GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
         GameTooltip:SetText(weakAuraCheck.displayName, 1, 1, 1);
         GameTooltip:AddLine(weakAuraCheck.auraName, nil, nil, nil, true)
-        GameTooltip:AddLine(weakAuraCheck.wagoUrl, nil, nil, nil, true)
+        -- GameTooltip:AddLine(weakAuraCheck.wagoUrl, nil, nil, nil, true)
         GameTooltip:Show()
       end,
       onLeave = function()

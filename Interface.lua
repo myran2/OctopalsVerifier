@@ -167,7 +167,7 @@ function UI:CreateTableFrame(config)
       local isStickyRow = false
 
       if not rowFrame then
-        rowFrame = CreateFrame("Button", "$parentRow" .. rowIndex, tableFrame, "SecureActionButtonTemplate")
+        rowFrame = CreateFrame("Button", "$parentRow" .. rowIndex, tableFrame)
         rowFrame.columns = {}
         tableFrame.rows[rowIndex] = rowFrame
       end
@@ -242,7 +242,7 @@ function UI:CreateTableFrame(config)
         local columnTextAlign = columnConfig and columnConfig.align or "LEFT"
 
         if not columnFrame then
-          columnFrame = CreateFrame("Button", "$parentCol" .. columnIndex, rowFrame, "SecureActionButtonTemplate")
+          columnFrame = CreateFrame("Button", "$parentCol" .. columnIndex, rowFrame)
           columnFrame.text = columnFrame:CreateFontString("$parentText", "OVERLAY")
           columnFrame.text:SetFontObject("GameFontHighlightSmall")
           columnFrame.text:SetWordWrap(false)
@@ -268,7 +268,7 @@ function UI:CreateTableFrame(config)
               columnFrame.editBoxSave:Hide()
             end
           end)
-          columnFrame.editBoxSave = CreateFrame("Button", nil, columnFrame.editBox, "SecureActionButtonTemplate")
+          columnFrame.editBoxSave = CreateFrame("Button", nil, columnFrame.editBox)
           columnFrame.editBoxSave:SetPoint("RIGHT", columnFrame.editBox, "RIGHT", -30)
           columnFrame.editBoxSave:SetWidth(20)
           columnFrame.editBoxSave:SetHeight(20)
