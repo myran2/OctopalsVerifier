@@ -271,7 +271,7 @@ function Main:Render()
     end
 
     do -- WeakAuras Settings Button
-      self.window.titlebar.WeakAurasSettings = CreateFrame("Button", "$parentWeakAurasSettings", self.window.titlebar, "SecureActionButtonTemplate")
+      self.window.titlebar.WeakAurasSettings = CreateFrame("Button", "$parentWeakAurasSettings", self.window.titlebar)
       self.window.titlebar.WeakAurasSettings:SetPoint("RIGHT", self.window.titlebar.ColumnsButton, "LEFT", 0, 0)
       self.window.titlebar.WeakAurasSettings:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
       self.window.titlebar.WeakAurasSettings:SetScript("OnEnter", function()
