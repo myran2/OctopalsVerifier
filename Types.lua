@@ -73,6 +73,7 @@
 ---@field waVersion string?
 ---@field bwVersion string?
 ---@field dbmVersion string?
+---@field nsVersion string?
 ---@field mrtVersion string?
 ---@field mrtNoteHash string?
 ---@field ignoreList table?

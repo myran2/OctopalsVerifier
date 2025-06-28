@@ -48,8 +48,10 @@ function Comms.processV2Message(sender, text)
   local version = fields[1]
   if version == '1' then
     Comms.processV2d1Message(sender, text)
-  else
+  elseif version == '2' then
     Comms.processV2d2Message(sender, text)
+  else
+    Comms.processV2d3Message(sender, text)
   end
 end
 
@@ -74,6 +76,7 @@ function Comms.processV2d1Message(sender, text)
     waVersion = fields[2],
     bwVersion = fields[3],
     dbmVersion = nil,
+    nsVersion = nil,
     mrtVersion = fields[4],
     mrtNoteHash = fields[5],
     ignoreList = fields[6] == ":)" and {} or Utils:ExplodeString(fields[6], ", "),
@@ -105,9 +108,42 @@ function Comms.processV2d2Message(sender, text)
     waVersion = fields[2],
     bwVersion = fields[3],
     dbmVersion = fields[4],
+    nsVersion = nil,
     mrtVersion = fields[5],
     mrtNoteHash = fields[6],
     ignoreList = fields[7] == ":)" and {} or Utils:ExplodeString(fields[7], ", "),
+    weakauras = Utils:TableFilter(fields, function(field, index) 
+      return index >= 8
+    end),
+    receivedAt = GetServerTime()
+  }
+end
+
+---@param sender string
+---@param text string
+function Comms.processV2d3Message(sender, text)
+  if not UnitExists(sender) then
+    return
+  end
+
+  local senderGUID = UnitGUID(sender)
+  if senderGUID == nil then
+    return
+  end
+
+  -- client version, WA addon ver, bigwigs ver, dbm ver, NSrt ver, mrt ver, mrt note hash, ignore list, WAs...
+  local fields = Utils:ExplodeString(text, "\r\n")
+  Data.raidMembers[senderGUID] = {
+    name = sender,
+    GUID = senderGUID,
+    classID = select(3, UnitClass(sender)),
+    waVersion = fields[2],
+    bwVersion = fields[3],
+    dbmVersion = fields[4],
+    nsVersion = fields[5],
+    mrtVersion = fields[6],
+    mrtNoteHash = fields[7],
+    ignoreList = fields[8] == ":)" and {} or Utils:ExplodeString(fields[7], ", "),
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 8
     end),

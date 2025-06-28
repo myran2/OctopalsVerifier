@@ -59,6 +59,19 @@ function Checks:DBMVersion()
   return "0"
 end
 
+--- Installed Northern Sky Raid Tools version
+--- @return string
+function Checks:NSVersion()
+  local ver = C_AddOns.GetAddOnMetadata("NorthernSkyRaidTools", "Version") or "Addon Missing"
+  if ver ~= "Addon Missing" then
+      ver = C_AddOns.IsAddOnLoaded("NorthernSkyRaidTools") and ver or "Addon not enabled"
+  end
+  if ver == "Addon Missing" or ver == "Addon not enabled" then
+    return "0"
+  end
+  return ver
+end
+
 --- Raiders in the group that are on this player's ignore list.
 ---@return table
 function Checks:IgnoredRaiders()
