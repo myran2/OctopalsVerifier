@@ -473,6 +473,26 @@ function Main:GetMainColumns(unfiltered)
         return Checks:GetCellObject('dbmVersion', character, Data:GetReferenceValues())
       end,
     },
+        {
+      name = "NS Version",
+      onEnter = function(cellFrame)
+        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+        GameTooltip:SetText("DBM Version", 1, 1, 1);
+        GameTooltip:AddLine("Version of the Northern Sky Raid Tools addon that this person has installed.")
+        -- GameTooltip:AddLine(" ")
+        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
+        GameTooltip:Show()
+      end,
+      onLeave = function()
+        GameTooltip:Hide()
+      end,
+      width = 100,
+      align = "CENTER",
+      toggleHidden = true,
+      cell = function(character)
+        return Checks:GetCellObject('nsVersion', character, Data:GetReferenceValues())
+      end,
+    },
     {
       name = "MRT Version",
       onEnter = function(cellFrame)

@@ -124,6 +124,7 @@ function Data:InitializeReferenceValue()
     waVersion = Checks:WeakAurasVersion(),
     bwVersion = Checks:BigWigsVersion(),
     dbmVersion = Checks:DBMVersion(),
+    nsVersion = Checks:NSVersion(),
     mrtVersion = Checks:MRTVersion(),
     mrtNoteHash = Checks:HashedMRTNote(),
     ignoreList = Checks:IgnoredRaiders(),
