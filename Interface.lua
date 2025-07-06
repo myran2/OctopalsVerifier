@@ -261,11 +261,16 @@ function UI:CreateTableFrame(config)
           columnFrame.editBox:SetPoint("LEFT", columnFrame, "LEFT", 3, 0)
           columnFrame.editBox:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 8, insets = {left = 4, right = 4, top = 4, bottom = 4}})
           columnFrame.editBox:SetBackdropBorderColor(0, 0, 0, .5)
+          columnFrame.editBox:SetText('')
+          columnFrame.editBox:SetScript("OnTextSet", function()
+            if columnFrame.editBox:GetText() == '' then
+              column.text = ''
+            end
+          end)
           columnFrame.editBox:SetScript("OnTextChanged", function()
+            columnFrame.editBoxSave:Hide()
             if columnFrame.editBox:GetText() ~= column.text then
               columnFrame.editBoxSave:Show()
-            else
-              columnFrame.editBoxSave:Hide()
             end
           end)
           columnFrame.editBoxSave = CreateFrame("Button", nil, columnFrame.editBox)
