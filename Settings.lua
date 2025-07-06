@@ -274,12 +274,39 @@ function Settings:GetColumns()
       end,
     },
     {
-      name = "Delete",
+      name = "",
+      width = 30,
+      align = "CENTER",
+      cell = function(weakAura, index)
+        return {
+          icon = "poi-door-arrow-up",
+          onClick = function()
+            Settings:MoveUp(index)
+          end
+        }
+      end,
+    },
+    {
+      name = "",
+      width = 30,
+      align = "CENTER",
+      cell = function(weakAura, index)
+        return {
+          icon = "poi-door-arrow-down",
+          onClick = function()
+            Settings:MoveDown(index)
+          end
+        }
+      end,
+    },
+    {
+      name = "",
       width = 60,
       align = "CENTER",
       cell = function(weakAura, index)
         return {
           icon = "common-icon-redx",
+          scale = 0.6,
           onClick = function()
             Settings:HandleRemoveWeakauraByIndex(index)
           end
@@ -291,6 +318,24 @@ end
 
 function Settings:HandleRemoveWeakauraByIndex(index)
   table.remove(self.weakAuras, index)
+  self:CommitChanges()
+end
+
+function Settings:MoveUp(index)
+  if index == 1 then
+    return
+  end
+
+  self.weakAuras = Utils:TableSwap(self.weakAuras, index, index - 1)
+  self:CommitChanges()
+end
+
+function Settings:MoveDown(index)
+  if index == #self.weakAuras then
+    return
+  end
+
+  self.weakAuras = Utils:TableSwap(self.weakAuras, index, index + 1)
   self:CommitChanges()
 end
 
