@@ -262,10 +262,9 @@ function UI:CreateTableFrame(config)
           columnFrame.editBox:SetBackdrop({edgeFile = "Interface/Tooltips/UI-Tooltip-Border", edgeSize = 8, insets = {left = 4, right = 4, top = 4, bottom = 4}})
           columnFrame.editBox:SetBackdropBorderColor(0, 0, 0, .5)
           columnFrame.editBox:SetScript("OnTextChanged", function()
-            if columnFrame.editBox:GetText() ~= column.text then
+            columnFrame.editBoxSave:Hide()
+            if columnFrame.editBox:GetText() ~= columnFrame.data.text then
               columnFrame.editBoxSave:Show()
-            else
-              columnFrame.editBoxSave:Hide()
             end
           end)
           columnFrame.editBoxSave = CreateFrame("Button", nil, columnFrame.editBox)
@@ -283,7 +282,6 @@ function UI:CreateTableFrame(config)
 
           columnFrame.tex = columnFrame:CreateTexture()
           columnFrame.tex:SetPoint("CENTER")
-          columnFrame.tex:SetScale(.5)
 
           rowFrame.columns[columnIndex] = columnFrame
         end
@@ -297,6 +295,7 @@ function UI:CreateTableFrame(config)
         columnFrame:SetScript("OnClick", function() columnFrame:onClickHandler(columnFrame) end)
         if column.icon then
           columnFrame.tex:SetAtlas(column.icon, true)
+          columnFrame.tex:SetScale(column.scale or 1)
           columnFrame.tex:Hide()
           columnFrame.tex:Show()
           columnFrame.text:SetText("")

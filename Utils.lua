@@ -153,6 +153,17 @@ function Utils:TableForEach(tbl, callback)
   return tbl
 end
 
+--Swap provided indeces in the provided table
+---@generic T
+---@param tbl T[]
+---@param index1 number
+---@param index2 number
+---@return T[]
+function Utils:TableSwap(tbl, index1, index2)
+  tbl[index1], tbl[index2] = tbl[index2], tbl[index1]
+  return tbl
+end
+
 -- Split a string into a table by a seperator
 ---@param text string
 ---@param sep string
