@@ -139,6 +139,7 @@ function Checks:GetCellContents(field, row, referenceRow, index)
   if field == 'ignoreList' and row[field] ~= nil and Utils:TableCount(row[field]) > 0 then
     return {
       icon = "common-icon-redx",
+      scale = 0.6,
       tooltip = function()
         GameTooltip:SetText("Players Ignored:", 1, 1, 1);
         Utils:TableForEach(row[field], function(ignoredName)
@@ -169,6 +170,7 @@ function Checks:GetCellContents(field, row, referenceRow, index)
   if value == nil then
     return {
       icon = "services-icon-warning",
+      scale = 0.5,
       tooltip = function()
         GameTooltip:SetText("Not Supported", 1, 1, 1);
         GameTooltip:AddLine("This player's verifier WeakAura is too old to support this check.")
@@ -179,6 +181,7 @@ function Checks:GetCellContents(field, row, referenceRow, index)
   if value == referenceValue then
     return {
       icon = "common-icon-checkmark",
+      scale = 0.6,
       tooltip = function()
         GameTooltip:SetText("Match", 1, 1, 1);
         GameTooltip:AddLine("This player's value for this check matches yours.")
@@ -188,6 +191,7 @@ function Checks:GetCellContents(field, row, referenceRow, index)
 
   return {
     icon = "common-icon-redx",
+    scale = 0.6,
     tooltip = function()
       GameTooltip:SetText("Mismatch!", 1, 1, 1);
       if value == nil or value == '-1' or value == '0' then
