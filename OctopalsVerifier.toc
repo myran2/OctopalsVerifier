@@ -1,7 +1,7 @@
 ## Interface: 110107
 ## Title: OctopalsVerifier
 ## Notes: Utility for verifying your raid's weakauras.
-## Version: 1.0.0
+## Version: @project-version@
 ## IconTexture: Interface\AddOns\OctopalsVerifier\Media\Icon.blp
 ## SavedVariables: OctopalsVerifierDB
 ## X-Website: https://github.com/myran2/OctopalsVerifier
