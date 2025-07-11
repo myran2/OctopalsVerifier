@@ -86,7 +86,8 @@ function Main:Render()
     self.window.titlebar.title:SetPoint("LEFT", self.window.titlebar, 28, 0)
     self.window.titlebar.title:SetJustifyH("LEFT")
     self.window.titlebar.title:SetJustifyV("MIDDLE")
-    self.window.titlebar.title:SetText(addonName)
+    local windowTitle = addonName .. ' - ' .. C_AddOns.GetAddOnMetadata(addonName, 'Version')
+    self.window.titlebar.title:SetText(windowTitle)
 
     do -- Close Button
       self.window.titlebar.closeButton = CreateFrame("Button", "$parentCloseButton", self.window.titlebar)

@@ -31,6 +31,7 @@ function Comms.processV1Message(sender, text)
     waVersion = fields[1],
     bwVersion = fields[2],
     dbmVersion = nil,
+    nsVersion = nil,
     mrtVersion = fields[3],
     mrtNoteHash = fields[4],
     ignoreList = nil,
@@ -143,7 +144,7 @@ function Comms.processV2d3Message(sender, text)
     nsVersion = fields[5],
     mrtVersion = fields[6],
     mrtNoteHash = fields[7],
-    ignoreList = fields[8] == ":)" and {} or Utils:ExplodeString(fields[7], ", "),
+    ignoreList = fields[8] == ":)" and {} or Utils:ExplodeString(fields[8], ", "),
     weakauras = Utils:TableFilter(fields, function(field, index) 
       return index >= 8
     end),
