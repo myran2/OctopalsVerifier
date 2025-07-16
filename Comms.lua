@@ -146,7 +146,7 @@ function Comms.processV2d3Message(sender, text)
     mrtNoteHash = fields[7],
     ignoreList = fields[8] == ":)" and {} or Utils:ExplodeString(fields[8], ", "),
     weakauras = Utils:TableFilter(fields, function(field, index) 
-      return index >= 8
+      return index >= 9
     end),
     receivedAt = GetServerTime()
   }
