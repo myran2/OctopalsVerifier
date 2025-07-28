@@ -14,7 +14,7 @@
 
 ---@class WK_DefaultGlobalSettings
 ---@field open boolean
----@field weakAurasToTrack Octo_WeakAura[]
+---@field checks Octo_Check[]
 
 ---@class WK_DataCache
 ---@field isDarkmoonOpen boolean
@@ -29,7 +29,6 @@
 ---@field onEnter function?
 ---@field onLeave function?
 ---@field cell fun(character: Octo_RaidMember): WK_TableDataCell
----@field toggleHidden boolean
 
 ---@class WK_TableData
 ---@field columns WK_TableDataColumn[]?
@@ -55,11 +54,12 @@
 ---@field onLeave function?
 ---@field onClick function?
 
----@class Octo_WeakAura
+---@class Octo_Check
 ---@field displayName string
----@field wagoUrl string
----@field auraName string
----@field allowNested boolean
+---@field exactName string?
+---@field moduleType string
+---@field url string?
+---@field enabled boolean
 
 ---@class Octo_InstalledWeakAura
 ---@field auraName string

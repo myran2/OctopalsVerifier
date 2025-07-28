@@ -12,6 +12,7 @@ addon.Data = Data
 
 local Utils = addon.Utils
 local Checks = addon.Checks
+local Constants = addon.Constants
 local AceDB = LibStub("AceDB-3.0")
 
 ---@type WK_DataCache
@@ -40,7 +41,7 @@ Data.defaultDB = {
     },
     settings = {
       open = false,
-      weakAurasToTrack = {}
+      checks = {}
     }
   }
 }
@@ -69,43 +70,94 @@ function Data:InitDB()
     true
   )
 
-  if #self.db.global.settings.weakAurasToTrack == 0 then
-    self.db.global.settings.weakAurasToTrack = Data:GetDefaultWeakAuras()
+  self.db.global.settings.checks = Data:GetDefaultChecks()
+  if #self.db.global.settings.checks == 0 then
+    self.db.global.settings.checks = Data:GetDefaultChecks()
   end
 end
 
---@type Octo_WeakAura[]
-function Data:GetDefaultWeakAuras()
+---@return Octo_Check[]
+function Data:GetDefaultChecks()
   return {
     {
+      moduleType = Constants.MODULE_TYPE_ADDON,
+      enabled = true,
+      displayName = "WA Addon",
+      exactName = "WeakAuras",
+      url = "https://www.curseforge.com/wow/addons/weakauras-2",
+    },
+    {
+      moduleType = Constants.MODULE_TYPE_ADDON,
+      enabled = true,
+      displayName = "BW Addon",
+      exactName = "BigWigs",
+      url = "https://www.curseforge.com/wow/addons/big-wigs",
+    },
+    {
+      moduleType = Constants.MODULE_TYPE_ADDON,
+      enabled = true,
+      displayName = "DBM Addon",
+      exactName = "DBM-Core",
+      url = "https://www.curseforge.com/wow/addons/deadly-boss-mods",
+    },
+    {
+      moduleType = Constants.MODULE_TYPE_ADDON,
+      enabled = true,
+      displayName = "NS Addon",
+      exactName = "NorthernSkyRaidTools",
+      url = "https://www.curseforge.com/wow/addons/northern-sky-raid-tools",
+    },
+    {
+      moduleType = Constants.MODULE_TYPE_ADDON,
+      enabled = true,
+      displayName = "MRT Addon",
+      exactName = "MRT",
+      url = "https://www.curseforge.com/wow/addons/method-raid-tools",
+    },
+    {
+      moduleType = Constants.MODULE_TYPE_MRT_NOTE_HASH,
+      enabled = true,
+      displayName = "MRT Hash",
+    },
+    {
+      moduleType = Constants.MODULE_TYPE_IGNORE_LIST,
+      enabled = true,
+      displayName = "Ignore List",
+    },
+    {
+      moduleType = Constants.MODULE_TYPE_WEAKAURA,
+      enabled = true,
       displayName = "Assignment Pack",
-      wagoUrl = "https://wago.io/NSUndermine",
-      auraName = "Northern Sky Liberation of Undermine",
-      allowNested = false,
+      exactName = "Northern Sky Liberation of Undermine",
+      url = "https://wago.io/NSUndermine",
     },
     {
+      moduleType = Constants.MODULE_TYPE_WEAKAURA,
+      enabled = true,
       displayName = "Raid Pack",
-      wagoUrl = "https://wago.io/Undermine",
-      auraName = "Liberation of Undermine",
-      allowNested = false,
+      exactName = "Liberation of Undermine",
+      url = "https://wago.io/Undermine",
     },
     {
+      moduleType = Constants.MODULE_TYPE_WEAKAURA,
+      enabled = true,
       displayName = "NS DB",
-      wagoUrl = "https://wago.io/NorthernSky",
-      auraName = "Northern Sky Database & Functions",
-      allowNested = false,
+      exactName = "Northern Sky Database & Functions",
+      url = "https://wago.io/NorthernSky",
     },
     {
+      moduleType = Constants.MODULE_TYPE_WEAKAURA,
+      enabled = true,
       displayName = "Interrupt",
-      wagoUrl = "https://wago.io/InterruptAnchor",
-      auraName = "Interrupt Anchor",
-      allowNested = false,
+      exactName = "Interrupt Anchor",
+      url = "https://wago.io/InterruptAnchor",
     },
     {
+      moduleType = Constants.MODULE_TYPE_WEAKAURA,
+      enabled = true,
       displayName = "Verifier Client",
-      wagoUrl = "https://wago.io/exrYkN05u",
-      auraName = "Octopals Verifier Client",
-      allowNested = false,
+      exactName = "Octopals Verifier Client",
+      url = "https://wago.io/exrYkN05u",
     }
   }
 end
@@ -116,25 +168,6 @@ function Data:GetTrackedWeakAuras()
   end)
 end
 
-function Data:InitializeReferenceValue()
-  Data.raidMembers[UnitGUID("player")] = {
-    name = GetUnitName("player", true),
-    GUID = UnitGUID("player") or "",
-    classID = select(3, UnitClass("player")),
-    waVersion = Checks:WeakAurasVersion(),
-    bwVersion = Checks:BigWigsVersion(),
-    dbmVersion = Checks:DBMVersion(),
-    nsVersion = Checks:NSVersion(),
-    mrtVersion = Checks:MRTVersion(),
-    mrtNoteHash = Checks:HashedMRTNote(),
-    ignoreList = Checks:IgnoredRaiders(),
-    weakauras = Utils:TableMap(Data:GetTrackedWeakAuras(), function(auraToTrack)
-      return Checks:WeakAuraVersionByName(auraToTrack.auraName)
-    end),
-    receivedAt = GetServerTime()
-  }
-end
-
 ---@return Octo_RaidMember
 function Data:GetReferenceValues()
   return self.raidMembers[UnitGUID("player")]
@@ -143,7 +176,6 @@ end
 ---Populate table with all characters currently in the group/raid.
 function Data:InitializeRaidMembers()
   self.raidMembers = {}
-  self:InitializeReferenceValue()
 
   for unit in Utils:IterateGroupMembers() do
     local raidMember = Utils:TableCopy(Data.defaultRaidMember)
@@ -152,7 +184,7 @@ function Data:InitializeRaidMembers()
     raidMember.classID = select(3, UnitClass(unit))
 
     if raidMember.GUID ~= UnitGUID("player") then
-      Data.raidMembers[raidMember.GUID] = raidMember
+      table.insert(self.raidMembers, raidMember)
     end
   end
 end
@@ -172,9 +204,6 @@ function Data:GetLiveRaidMembers()
       return true
     end
 
-    if a.receivedAt == b.receivedAt then
-      return a.GUID == UnitGUID('player')
-    end
     return a.receivedAt < b.receivedAt
   end)
 

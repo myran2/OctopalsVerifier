@@ -27,6 +27,12 @@ Constants.lua
 Utils.lua
 Interface.lua
 Checks.lua
+Modules\Modules.lua
+Modules\Name.lua
+Modules\Addon.lua
+Modules\WeakAura.lua
+Modules\MRTHash.lua
+Modules\IgnoreList.lua
 Data.lua
 Comms.lua
 Settings.lua

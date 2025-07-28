@@ -59,6 +59,16 @@ function Checks:DBMVersion()
   return "0"
 end
 
+---@param name string
+---@return string
+function Checks:GetAddonVersion(name)
+  local ver = C_AddOns.GetAddOnMetadata(name, "Version") or "Not Installed"
+  if ver ~= "Not Installed" then
+      ver = C_AddOns.IsAddOnLoaded(name) and ver or "Not Enabled"
+  end
+  return ver
+end
+
 --- Installed Northern Sky Raid Tools version
 --- @return string
 function Checks:NSVersion()
@@ -103,122 +113,4 @@ function Checks:WeakAuraVersionByName(waName)
       return 0
   end
   return tonumber(versionStr)
-end
-
-
----@return string?
-function Checks:GetCheckValueAsString(field, index, row)
-  if row[field] == nil then
-    return nil
-  end
-
-  if type(row[field]) == 'table' and index ~= nil then
-    return tostring(row[field][index])
-  end
-
-  if field == 'ignoreList' then
-    if Utils:TableCount(row[field]) == 0 then
-      return "*Empty*"
-    end
-    return tostring(Utils:TableCount(row[field]))
-  end
-
-  return tostring(row[field])
-end
-
----@param field string
----@param row Octo_RaidMember
----@param referenceRow Octo_RaidMember
----@param index number?
-function Checks:GetCellContents(field, row, referenceRow, index)
-  local value = Checks:GetCheckValueAsString(field, index, row)
-  local referenceValue = Checks:GetCheckValueAsString(field, index, referenceRow)
-
-  -- this player has people in the raid on their ignore list!
-  -- this is a problem even for the "reference"
-  if field == 'ignoreList' and row[field] ~= nil and Utils:TableCount(row[field]) > 0 then
-    return {
-      icon = "common-icon-redx",
-      scale = 0.6,
-      tooltip = function()
-        GameTooltip:SetText("Players Ignored:", 1, 1, 1);
-        Utils:TableForEach(row[field], function(ignoredName)
-          GameTooltip:AddLine(RED_FONT_COLOR:WrapTextInColorCode(ignoredName))
-        end)
-      end
-    }
-  end
-
-  -- "reference" row should just show the values.
-  if row.GUID == UnitGUID("player") then
-    return {
-      text = value == '-1' and "*Not Installed*" or value
-    }
-
-  end
-
-  if row.receivedAt == 0 then
-    return {
-      text = "...",
-      tooltip = function()
-        GameTooltip:SetText("No Response", 1, 1, 1);
-        GameTooltip:AddLine("This player doesn't have the verifier installed OR they were in combat at the time of the check.")
-      end
-    }
-  end
-
-  if value == nil then
-    return {
-      icon = "services-icon-warning",
-      scale = 0.5,
-      tooltip = function()
-        GameTooltip:SetText("Not Supported", 1, 1, 1);
-        GameTooltip:AddLine("This player's verifier WeakAura is too old to support this check.")
-      end
-    }
-  end
-
-  if value == referenceValue then
-    return {
-      icon = "common-icon-checkmark",
-      scale = 0.6,
-      tooltip = function()
-        GameTooltip:SetText("Match", 1, 1, 1);
-        GameTooltip:AddLine("This player's value for this check matches yours.")
-      end
-    }
-  end
-
-  return {
-    icon = "common-icon-redx",
-    scale = 0.6,
-    tooltip = function()
-      GameTooltip:SetText("Mismatch!", 1, 1, 1);
-      if value == nil or value == '-1' or value == '0' then
-        GameTooltip:AddDoubleLine(RED_FONT_COLOR:WrapTextInColorCode("Player doesn't have the Addon/WA enabled or installed."))
-      else
-        GameTooltip:AddDoubleLine(RED_FONT_COLOR:WrapTextInColorCode(value), "This value doesn't match yours.")
-      end
-    end
-  }
-end
-
----@param field string
----@param row Octo_RaidMember
----@param referenceRow Octo_RaidMember
----@param index number?
----@return WK_TableDataCell
-function Checks:GetCellObject(field, row, referenceRow, index)
-  local cellContents = self:GetCellContents(field, row, referenceRow, index)
-  if cellContents.tooltip then
-    cellContents.onEnter = function(cellFrame)
-      GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-      cellContents.tooltip()
-      GameTooltip:Show()
-    end
-    cellContents.onLeave = function()
-      GameTooltip:Hide()
-    end
-  end
-  return cellContents
 end

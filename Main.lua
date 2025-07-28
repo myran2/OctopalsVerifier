@@ -230,50 +230,9 @@ function Main:Render()
       self.window.titlebar.SettingsButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
     end
 
-    do -- Columns Button
-      self.window.titlebar.ColumnsButton = CreateFrame("DropdownButton", "$parentColumnsButton", self.window.titlebar)
-      self.window.titlebar.ColumnsButton:SetPoint("RIGHT", self.window.titlebar.SettingsButton, "LEFT", 0, 0)
-      self.window.titlebar.ColumnsButton:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
-      self.window.titlebar.ColumnsButton:SetScript("OnEnter", function()
-        self.window.titlebar.ColumnsButton.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.ColumnsButton, 1, 1, 1, 0.05)
-        ---@diagnostic disable-next-line: param-type-mismatch
-        GameTooltip:SetOwner(self.window.titlebar.ColumnsButton, "ANCHOR_TOP")
-        GameTooltip:SetText("Columns", 1, 1, 1, 1, true);
-        GameTooltip:AddLine("Enable/Disable table columns.", NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b);
-        GameTooltip:Show()
-      end)
-      self.window.titlebar.ColumnsButton:SetScript("OnLeave", function()
-        self.window.titlebar.ColumnsButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
-        Utils:SetBackgroundColor(self.window.titlebar.ColumnsButton, 1, 1, 1, 0)
-        GameTooltip:Hide()
-      end)
-      self.window.titlebar.ColumnsButton:SetupMenu(function(_, rootMenu)
-        local hidden = Data.db.global.main.hiddenColumns
-        Utils:TableForEach(self:GetMainColumns(true), function(column)
-          if not column.toggleHidden then return end
-          rootMenu:CreateCheckbox(
-            column.name,
-            function() return not hidden[column.name] end,
-            function(columnName)
-              hidden[columnName] = not hidden[columnName]
-              self:Render()
-            end,
-            column.name
-          )
-        end)
-      end)
-
-      self.window.titlebar.ColumnsButton.Icon = self.window.titlebar:CreateTexture(self.window.titlebar.ColumnsButton:GetName() .. "Icon", "ARTWORK")
-      self.window.titlebar.ColumnsButton.Icon:SetPoint("CENTER", self.window.titlebar.ColumnsButton, "CENTER")
-      self.window.titlebar.ColumnsButton.Icon:SetSize(12, 12)
-      self.window.titlebar.ColumnsButton.Icon:SetTexture("Interface/AddOns/OctopalsVerifier/Media/Icon_Columns.blp")
-      self.window.titlebar.ColumnsButton.Icon:SetVertexColor(0.7, 0.7, 0.7, 1)
-    end
-
     do -- WeakAuras Settings Button
       self.window.titlebar.WeakAurasSettings = CreateFrame("Button", "$parentWeakAurasSettings", self.window.titlebar)
-      self.window.titlebar.WeakAurasSettings:SetPoint("RIGHT", self.window.titlebar.ColumnsButton, "LEFT", 0, 0)
+      self.window.titlebar.WeakAurasSettings:SetPoint("RIGHT", self.window.titlebar.SettingsButton, "LEFT", 0, 0)
       self.window.titlebar.WeakAurasSettings:SetSize(Constants.TITLEBAR_HEIGHT, Constants.TITLEBAR_HEIGHT)
       self.window.titlebar.WeakAurasSettings:SetScript("OnEnter", function()
         self.window.titlebar.WeakAurasSettings.Icon:SetVertexColor(0.9, 0.9, 0.9, 1)
@@ -344,8 +303,20 @@ function Main:Render()
       ---@type WK_TableDataCell
       local cell = {
         text = NORMAL_FONT_COLOR:WrapTextInColorCode(dataColumn.name),
-        onEnter = dataColumn.onEnter,
-        onLeave = dataColumn.onLeave,
+        onEnter = function(cellFrame)
+          if dataColumn.description and #dataColumn.description > 0 then
+            GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
+            GameTooltip:SetText(dataColumn.name, 1, 1, 1);
+            Utils:TableForEach(dataColumn.description, function(descLine)
+              GameTooltip:AddLine(descLine)
+            end)
+            GameTooltip:Show()
+          end
+        end,
+        onLeave = function(cellFrame)
+          if not dataColumn.description then return end
+          GameTooltip:Hide()
+        end,
       }
       table.insert(row.columns, cell)
     end)
@@ -353,14 +324,27 @@ function Main:Render()
     tableHeight = tableHeight + self.window.table.config.header.height
   end
 
+  do -- Reference Value row
+    local row = {columns = {}}
+    local raidMember = {
+      name = GetUnitName("player", true),
+      GUID = UnitGUID("player"),
+      classID = select(3, UnitClass("player")),
+    }
+    Utils:TableForEach(dataColumns, function(dataColumn)
+      table.insert(row.columns, dataColumn:GetCellContents(raidMember, true))
+    end)
+
+    table.insert(tableData.rows, row)
+    tableHeight = tableHeight + self.window.table.config.rows.height
+  end
+
   do -- Table data
-    Utils:TableForEach(Data:GetLiveRaidMembers(), function(raidMember)
+    Utils:TableForEach(Data:GetLiveRaidMembers(), function(raidMember, index)
       ---@type WK_TableDataRow
       local row = {columns = {}}
       Utils:TableForEach(dataColumns, function(dataColumn)
-        ---@type WK_TableDataCell
-        local cell = dataColumn.cell(raidMember)
-        table.insert(row.columns, cell)
+        table.insert(row.columns, dataColumn:GetCellContents(raidMember, false))
       end)
 
       table.insert(tableData.rows, row)
@@ -379,216 +363,35 @@ function Main:Render()
 end
 
 ---Get columns for the table
----@param unfiltered boolean?
 ---@return WK_DataColumn[]
-function Main:GetMainColumns(unfiltered)
-  local hidden = Data.db.global.main.hiddenColumns
+function Main:GetMainColumns()
   ---@type WK_DataColumn[]
   local columns = {
-    {
-      name = "Name",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Name", 1, 1, 1);
-        GameTooltip:AddLine("People in your raid.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 120,
-      toggleHidden = true,
-      cell = function(character)
-        local name = character.name
-        if character.classID then
-          local _, classFile = GetClassInfo(character.classID)
-          if classFile then
-            local color = C_ClassColor.GetClassColor(classFile)
-            if color then
-              name = color:WrapTextInColorCode(name)
-            end
-          end
-        end
-        return {text = name}
-      end,
-    },
-    {
-      name = "WA Version",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("WA Version", 1, 1, 1);
-        GameTooltip:AddLine("Version of the WeakAuras addon that this person has installed.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 100,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(character)
-        return Checks:GetCellObject('waVersion', character, Data:GetReferenceValues())
-      end,
-    },
-    {
-      name = "BW Version",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("BW Version", 1, 1, 1);
-        GameTooltip:AddLine("Version of the BigWigs addon that this person has installed.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 100,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(character)
-        return Checks:GetCellObject('bwVersion', character, Data:GetReferenceValues())
-      end,
-    },
-    {
-      name = "DBM Version",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("DBM Version", 1, 1, 1);
-        GameTooltip:AddLine("Version of the Deadly Boss Mods addon that this person has installed.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 100,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(character)
-        return Checks:GetCellObject('dbmVersion', character, Data:GetReferenceValues())
-      end,
-    },
-        {
-      name = "NS Version",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("DBM Version", 1, 1, 1);
-        GameTooltip:AddLine("Version of the Northern Sky Raid Tools addon that this person has installed.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 100,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(character)
-        return Checks:GetCellObject('nsVersion', character, Data:GetReferenceValues())
-      end,
-    },
-    {
-      name = "MRT Version",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("MRT Version", 1, 1, 1);
-        GameTooltip:AddLine("Version of the Method Raid Tools addon that this person has installed.")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 100,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(character)
-        return Checks:GetCellObject('mrtVersion', character, Data:GetReferenceValues())
-      end,
-    },
-    {
-      name = "MRT Note Hash",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("MRT Note Hash", 1, 1, 1);
-        GameTooltip:AddLine("Do the contents of this player's MRT note match yours?")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 100,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(character)
-        return Checks:GetCellObject('mrtNoteHash', character, Data:GetReferenceValues())
-      end,
-    },
-    {
-      name = "Ignore List",
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText("Ignore List", 1, 1, 1);
-        GameTooltip:AddLine("Does this player have anyone in the raid group on their ignore list?")
-        -- GameTooltip:AddLine(" ")
-        -- GameTooltip:AddLine("<Click to Sort Column>", GREEN_FONT_COLOR.r, GREEN_FONT_COLOR.g, GREEN_FONT_COLOR.b, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 100,
-      align = "CENTER",
-      toggleHidden = true,
-      cell = function(character)
-        return Checks:GetCellObject('ignoreList', character, Data:GetReferenceValues())
-      end,
-    },
+    addon.Modules.Name:new()
   }
 
-  Utils:TableForEach(Data:GetTrackedWeakAuras(), function(weakAuraCheck, index)
-    ---@type WK_DataColumn
-    local dataColumn = {
-      name = weakAuraCheck.displayName ~= "" and weakAuraCheck.displayName or weakAuraCheck.auraName,
-      onEnter = function(cellFrame)
-        GameTooltip:SetOwner(cellFrame, "ANCHOR_RIGHT")
-        GameTooltip:SetText(weakAuraCheck.displayName, 1, 1, 1);
-        GameTooltip:AddLine(weakAuraCheck.auraName, nil, nil, nil, true)
-        -- GameTooltip:AddLine(weakAuraCheck.wagoUrl, nil, nil, nil, true)
-        GameTooltip:Show()
-      end,
-      onLeave = function()
-        GameTooltip:Hide()
-      end,
-      width = 120,
-      toggleHidden = false,
-      align = "CENTER",
-      cell = function(character)
-        return Checks:GetCellObject('weakauras', character, Data:GetReferenceValues(), index)
-      end
-    }
-    table.insert(columns, dataColumn)
+  Utils:TableForEach(Data.db.global.settings.checks, function(check)
+    if not check.enabled then
+      return
+    end
+
+    local checkModule
+    if check.moduleType == Constants.MODULE_TYPE_ADDON then
+      checkModule = addon.Modules.Addon:new(check)
+    elseif check.moduleType == Constants.MODULE_TYPE_MRT_NOTE_HASH then
+      checkModule = addon.Modules.MrtHash:new(check)
+    elseif check.moduleType == Constants.MODULE_TYPE_IGNORE_LIST then
+      checkModule = addon.Modules.IgnoreList:new(check)
+    elseif check.moduleType == Constants.MODULE_TYPE_WEAKAURA then
+      checkModule = addon.Modules.WeakAura:new(check)
+    else
+      assert(false, "Unsupported module type: " .. check.moduleType)
+    end
+
+    table.insert(columns, checkModule)
   end)
 
-  if unfiltered then
-    return columns
-  end
-
-  local filteredColumns = Utils:TableFilter(columns, function(column)
-    return not hidden[column.name]
-  end)
-
-  return filteredColumns
+  return columns
 end
 
 function Main:RefreshTable()
